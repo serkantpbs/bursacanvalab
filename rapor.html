@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Etkinlik Raporu | Canva Tasarım Laboratuvarı</title>
+  <link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+  <header id="site-header"></header>
+  <main>
+    <section class="page-hero"><div class="wrap">
+      <span class="eyebrow" style="color:#fff;opacity:.85">Etkinlik raporu</span>
+      <h1>Etkinliğinizi bildirin</h1>
+      <p>Laboratuvardaki etkinliğiniz tamamlandıktan sonra bu formu doldurun. Bilgiler laboratuvarın kullanım istatistiklerini oluşturmak için kullanılır.</p>
+    </div></section>
+
+    <section class="block">
+      <div class="wrap" style="max-width:900px">
+        <div class="card">
+          <form id="form" novalidate>
+            <div class="field" style="margin-bottom:22px">
+              <label for="kod">Randevu kodu (isteğe bağlı)</label>
+              <div style="display:flex;gap:10px;flex-wrap:wrap">
+                <input id="kod" name="kod" placeholder="CTL-XXXXXX" style="flex:1 1 200px;text-transform:uppercase">
+                <button class="btn btn-soft" id="lookup" type="button">Bilgileri getir</button>
+              </div>
+              <div class="hint">Randevu kodunuzu girerseniz okul, ilçe, ad soyad ve tarih bilgileri kendiliğinden doldurulur.</div>
+            </div>
+
+            <div class="form-grid">
+              <div class="field"><label for="okul">Okul adı <span class="req">*</span></label><input id="okul" required></div>
+              <div class="field"><label for="adSoyad">Öğretmenin adı soyadı <span class="req">*</span></label><input id="adSoyad" autocomplete="name" required></div>
+              <div class="field"><label for="il">İl</label><input id="il" readonly></div>
+              <div class="field"><label for="ilce">İlçe <span class="req">*</span></label><select id="ilce" required></select></div>
+              <div class="field"><label for="tarih">Etkinlik tarihi <span class="req">*</span></label><input id="tarih" type="date" required></div>
+              <div class="field"><label for="oturum">Oturum <span class="req">*</span></label><select id="oturum" required></select></div>
+              <div class="field full"><span class="lbl">Kademe <span class="req">*</span></span><div class="radio-row" id="kademe" role="radiogroup" aria-label="Kademe"></div></div>
+              <div class="field"><label for="ogrenci">Katılan öğrenci sayısı <span class="req">*</span></label><input id="ogrenci" type="number" min="0" inputmode="numeric" required></div>
+              <div class="field" style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
+                <div><label for="kiz">Kız öğrenci <span class="req">*</span></label><input id="kiz" type="number" min="0" inputmode="numeric" required></div>
+                <div><label for="erkek">Erkek öğrenci <span class="req">*</span></label><input id="erkek" type="number" min="0" inputmode="numeric" required></div>
+              </div>
+              <div class="field full"><label for="aciklama">Yapılan etkinliğin kısa açıklaması <span class="req">*</span></label><textarea id="aciklama" maxlength="1000" required placeholder="Etkinliğin konusu, amacı ve öğrencilerin ortaya koyduğu ürünler"></textarea><div class="hint"><span id="count">0</span> / 1000 karakter</div></div>
+              <div class="field full"><span class="lbl">Kullanılan araçlar <span class="req">*</span></span><div class="tools-pick" id="tools"></div></div>
+              <div class="full"><label class="check"><input type="checkbox" id="kvkk"><span><a href="kvkk.html" target="_blank" rel="noopener">KVKK Aydınlatma Metni</a>'ni okudum; bu formdaki bilgilerin laboratuvar kullanım raporlaması amacıyla işlenmesini kabul ediyorum. <span style="color:var(--hata)">*</span></span></label></div>
+            </div>
+            <div class="alert alert-err hidden" id="formErr" role="alert" style="margin-top:16px"></div>
+            <div class="btn-row" style="margin-top:18px"><button class="btn btn-primary" id="submit" type="submit">Raporu gönder</button></div>
+          </form>
+
+          <div class="success-box hidden" id="success">
+            <svg viewBox="0 0 24 24" width="56" height="56" fill="none" stroke="#12805C" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin:0 auto"><circle cx="12" cy="12" r="10"/><path d="M7.5 12.5l3 3 6-6"/></svg>
+            <h2 style="font-size:1.4rem;margin-top:12px">Raporunuz kaydedildi</h2>
+            <p class="muted">Laboratuvarı kullandığınız ve bilgileri paylaştığınız için teşekkür ederiz.</p>
+            <button class="btn btn-soft" id="again" type="button">Yeni rapor</button>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+  <footer id="site-footer"></footer>
+  <script src="assets/js/config.js"></script>
+  <script src="assets/js/data.js"></script>
+  <script src="assets/js/api.js"></script>
+  <script src="assets/js/layout.js"></script>
+  <script>
+    (function () {
+      const C = LAB_CONFIG, D = LAB_DATA, $ = id => document.getElementById(id);
+      $("il").value = C.IL;
+      fillIlceler($("ilce"));
+      $("oturum").innerHTML = `<option value="">Oturum seçin</option>` + C.OTURUMLAR.map(o => `<option value="${o.id}">${esc(o.ad)} (${esc(o.saat)})</option>`).join("");
+      $("kademe").innerHTML = D.KADEMELER.map(k => `<label class="radio-pill"><input type="radio" name="kademe" value="${esc(k)}"><span>${esc(k)}</span></label>`).join("");
+      $("tools").innerHTML = D.ALT_SISTEMLER.map(s => `<fieldset><legend style="color:${s.renk}">${esc(s.ad)}</legend><div class="opts">${
+        D.ARACLAR.filter(a => a.alt === s.id).map(a => `<label><input type="checkbox" name="arac" value="${esc(a.id)}"><span>${esc(a.ad)}</span></label>`).join("")}</div></fieldset>`).join("");
+      $("tarih").max = LabAPI.util.toKey(LabAPI.util.today());
+      $("aciklama").addEventListener("input", () => $("count").textContent = $("aciklama").value.length);
+
+      $("lookup").addEventListener("click", async () => {
+        const kod = $("kod").value.trim();
+        if (!kod) { toast("Önce randevu kodunu yazın.", "err"); return; }
+        const b = $("lookup"); b.disabled = true; b.textContent = "Aranıyor…";
+        const r = await LabAPI.lookup(kod);
+        b.disabled = false; b.textContent = "Bilgileri getir";
+        if (!r.ok) { toast(r.error, "err"); return; }
+        const x = r.randevu;
+        $("okul").value = x.okul; $("adSoyad").value = x.adSoyad; $("ilce").value = x.ilce;
+        $("tarih").value = x.tarih; $("oturum").value = x.oturum;
+        if (!$("ogrenci").value) $("ogrenci").value = x.kisi;
+        toast("Randevu bilgileri getirildi.", "ok");
+      });
+
+      $("form").addEventListener("submit", async e => {
+        e.preventDefault();
+        const err = $("formErr"); err.classList.add("hidden");
+        const k = document.querySelector('input[name="kademe"]:checked');
+        const data = {
+          kod: $("kod").value, okul: $("okul").value, il: C.IL, ilce: $("ilce").value, adSoyad: $("adSoyad").value,
+          kademe: k ? k.value : "", tarih: $("tarih").value, oturum: $("oturum").value,
+          ogrenci: $("ogrenci").value, kiz: $("kiz").value, erkek: $("erkek").value,
+          aciklama: $("aciklama").value, araclar: [...document.querySelectorAll('input[name="arac"]:checked')].map(i => i.value),
+          aracAdlari: [...document.querySelectorAll('input[name="arac"]:checked')].map(i => i.nextElementSibling.textContent),
+          kvkk: $("kvkk").checked
+        };
+        const v = LabAPI.util.validateReport(data);
+        if (v) { err.textContent = v; err.classList.remove("hidden"); return; }
+        const btn = $("submit"); btn.disabled = true; btn.textContent = "Gönderiliyor…";
+        const r = await LabAPI.submitReport(data);
+        btn.disabled = false; btn.textContent = "Raporu gönder";
+        if (!r.ok) { err.textContent = r.error; err.classList.remove("hidden"); return; }
+        $("form").reset(); $("il").value = C.IL; $("count").textContent = 0;
+        $("form").classList.add("hidden"); $("success").classList.remove("hidden");
+        window.scrollTo({ top: 0, behavior: "smooth" });
+      });
+      $("again").addEventListener("click", () => { $("success").classList.add("hidden"); $("form").classList.remove("hidden"); });
+    })();
+  </script>
+</body>
+</html>

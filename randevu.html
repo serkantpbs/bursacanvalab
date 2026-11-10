@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Randevu | Canva Tasarım Laboratuvarı</title>
+  <link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+  <header id="site-header"></header>
+  <main>
+    <section class="page-hero"><div class="wrap">
+      <span class="eyebrow" style="color:#fff;opacity:.85">Randevu</span>
+      <h1>Laboratuvar dersinizi planlayın</h1>
+      <p>Takvimden boş bir oturum seçin ve formu doldurun. Talebiniz incelendikten sonra onay ya da ret bilgisi e-posta adresinize gönderilir.</p>
+    </div></section>
+
+    <section class="block">
+      <div class="wrap grid" style="grid-template-columns:minmax(0,2.1fr) minmax(0,1fr);align-items:start" id="layout">
+        <div>
+          <div class="card">
+            <div class="week-nav">
+              <button class="btn btn-soft btn-sm" id="prev" type="button" aria-label="Önceki hafta">← Önceki</button>
+              <strong id="weekLabel"></strong>
+              <button class="btn btn-soft btn-sm" id="next" type="button" aria-label="Sonraki hafta">Sonraki →</button>
+            </div>
+            <div class="cal" id="cal" aria-live="polite"></div>
+            <div class="legend" style="margin-top:16px">
+              <span><i style="background:#E7FAF6;border:1.5px solid #9DE6DA"></i>Boş</span>
+              <span><i style="background:#7D2AE8"></i>Seçili</span>
+              <span><i style="background:#FDECEA"></i>Dolu</span>
+              <span><i style="background:#ECEAF1"></i>Kapalı / tatil</span>
+            </div>
+          </div>
+
+          <div class="card" id="formCard" style="margin-top:20px">
+            <h2 style="font-size:1.4rem">Randevu bilgileri</h2>
+            <div class="summary hidden" id="summary">
+              <svg viewBox="0 0 24 24" fill="none" stroke="#7D2AE8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="16" rx="3"/><path d="M3 10h18M8 3v4M16 3v4"/></svg>
+              <div><b id="sumDate"></b><br><span id="sumSess" class="muted"></span></div>
+            </div>
+            <div class="alert alert-info" id="pickFirst">Önce takvimden boş bir oturum seçin.</div>
+
+            <form id="form" class="hidden" novalidate>
+              <div class="form-grid">
+                <div class="field"><label for="adSoyad">Adı soyadı <span class="req">*</span></label><input id="adSoyad" name="adSoyad" autocomplete="name" required></div>
+                <div class="field"><label for="okul">Okul adı <span class="req">*</span></label><input id="okul" name="okul" required placeholder="Okulunuzun tam adı"></div>
+                <div class="field"><label for="il">İl</label><input id="il" name="il" readonly></div>
+                <div class="field"><label for="ilce">İlçe <span class="req">*</span></label><select id="ilce" name="ilce" required></select></div>
+                <div class="field" id="kisiField"><label for="kisi">Etkinliğe katılacak kişi sayısı <span class="req">*</span></label>
+                  <input id="kisi" name="kisi" type="number" min="1" inputmode="numeric" required>
+                  <div class="hint" id="kisiHint"></div>
+                  <div class="err" id="kisiErr"></div>
+                </div>
+                <div class="field"><label for="telefon">Telefon <span class="req">*</span></label><input id="telefon" name="telefon" type="tel" autocomplete="tel" placeholder="05XX XXX XX XX" required></div>
+                <div class="field full"><label for="eposta">E-posta <span class="req">*</span></label><input id="eposta" name="eposta" type="email" autocomplete="email" required><div class="hint">Onay ya da ret bildirimi bu adrese gönderilir.</div></div>
+                <div class="field full"><label for="aciklama">Planladığınız etkinlik (isteğe bağlı)</label><textarea id="aciklama" name="aciklama" maxlength="600" placeholder="Hangi araçları, hangi kazanımlar için kullanmayı planlıyorsunuz?"></textarea></div>
+                <div class="full"><label class="check"><input type="checkbox" id="kvkk" name="kvkk"><span><a href="kvkk.html" target="_blank" rel="noopener">KVKK Aydınlatma Metni</a>'ni okudum; kişisel verilerimin randevu sürecinin yürütülmesi amacıyla işlenmesini kabul ediyorum. <span class="req" style="color:var(--hata)">*</span></span></label></div>
+              </div>
+              <div class="alert alert-err hidden" id="formErr" role="alert" style="margin-top:16px"></div>
+              <div class="btn-row" style="margin-top:18px"><button class="btn btn-primary" id="submit" type="submit">Randevu talebi gönder</button></div>
+            </form>
+
+            <div class="success-box hidden" id="success">
+              <svg viewBox="0 0 24 24" width="56" height="56" fill="none" stroke="#12805C" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin:0 auto"><circle cx="12" cy="12" r="10"/><path d="M7.5 12.5l3 3 6-6"/></svg>
+              <h2 style="font-size:1.4rem;margin-top:12px">Talebiniz alındı</h2>
+              <p class="muted">Randevu kodunuz:</p>
+              <div class="code-pill" id="code"></div>
+              <p id="successText"></p>
+              <p class="muted" style="font-size:.9rem">Bu kodu saklayın. Etkinlik sonrasında rapor formunu doldururken kodu girdiğinizde bilgileriniz kendiliğinden gelir.</p>
+              <button class="btn btn-soft" id="again" type="button">Takvime dön</button>
+            </div>
+          </div>
+        </div>
+
+        <aside class="card">
+          <h3>Randevu kuralları</h3>
+          <div class="rules" id="rulesBox"></div>
+        </aside>
+      </div>
+    </section>
+  </main>
+  <footer id="site-footer"></footer>
+  <script src="assets/js/config.js"></script>
+  <script src="assets/js/data.js"></script>
+  <script src="assets/js/api.js"></script>
+  <script src="assets/js/layout.js"></script>
+  <script src="assets/js/randevu.js"></script>
+</body>
+</html>

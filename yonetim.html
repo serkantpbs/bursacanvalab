@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex, nofollow">
+  <title>Yönetim Paneli | Canva Tasarım Laboratuvarı</title>
+  <link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+  <header id="site-header"></header>
+  <main>
+    <section class="block" style="padding-top:40px">
+      <div class="wrap">
+        <div id="login" class="card" style="max-width:420px;margin:40px auto">
+          <h2 style="font-size:1.4rem">Yönetim paneli</h2>
+          <p class="muted" id="loginHint">Randevuları onaylamak ve raporları görmek için şifrenizi girin.</p>
+          <form id="loginForm">
+            <div class="field"><label for="pw">Şifre</label><input id="pw" type="password" autocomplete="current-password" required></div>
+            <div class="alert alert-err hidden" id="loginErr" style="margin-top:12px"></div>
+            <button class="btn btn-primary" style="margin-top:16px;width:100%" type="submit">Giriş yap</button>
+          </form>
+        </div>
+
+        <div id="panel" class="hidden">
+          <div style="display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:14px">
+            <h1 style="font-size:1.8rem;margin:0">Yönetim paneli</h1>
+            <div class="btn-row"><button class="btn btn-soft btn-sm" id="reload" type="button">Yenile</button><button class="btn btn-soft btn-sm" id="logout" type="button">Çıkış</button></div>
+          </div>
+          <div class="alert alert-warn hidden" id="mailNote" style="margin-bottom:16px">Önizleme modundasınız: onay ve ret e-postaları gerçek kurulumda (Apps Script) gönderilir.</div>
+          <div class="tabs" role="tablist">
+            <button class="active" data-tab="bekleyen" role="tab">Bekleyen talepler<span class="count" id="pendingCount">0</span></button>
+            <button data-tab="tum" role="tab">Tüm randevular</button>
+            <button data-tab="kapat" role="tab">Gün / oturum kapat</button>
+            <button data-tab="rapor" role="tab">Raporlar ve istatistik</button>
+          </div>
+
+          <div data-pane="bekleyen"><div class="table-wrap"><table class="data" id="tPending"></table></div></div>
+
+          <div data-pane="tum" class="hidden">
+            <div class="filters">
+              <select id="fDurum"><option value="">Tüm durumlar</option><option value="beklemede">Beklemede</option><option value="onaylandi">Onaylandı</option><option value="reddedildi">Reddedildi</option><option value="iptal">İptal</option></select>
+              <select id="fZaman"><option value="gelecek">Bugün ve sonrası</option><option value="gecmis">Geçmiş</option><option value="">Tümü</option></select>
+              <input id="fAra" type="search" placeholder="Ad, okul, ilçe, kod ara">
+              <button class="btn btn-soft btn-sm" id="csvB" type="button">Excel'e aktar (CSV)</button>
+            </div>
+            <div class="table-wrap"><table class="data" id="tAll"></table></div>
+          </div>
+
+          <div data-pane="kapat" class="hidden">
+            <div class="grid g2" style="align-items:start">
+              <div class="card">
+                <h3>Gün veya oturum kapat</h3>
+                <p class="muted" style="font-size:.9rem">Dinî bayramlar, idari izinler, bakım ya da kendi atölyeleriniz için kullanın. Kapatılan oturumlar takvimde "Kapalı" görünür.</p>
+                <form id="closeForm" class="form-grid">
+                  <div class="field"><label for="cBas">Başlangıç tarihi</label><input id="cBas" type="date" required></div>
+                  <div class="field"><label for="cBit">Bitiş tarihi (isteğe bağlı)</label><input id="cBit" type="date"></div>
+                  <div class="field"><label for="cOt">Kapsam</label><select id="cOt"></select></div>
+                  <div class="field"><label for="cNeden">Neden</label><input id="cNeden" placeholder="ör. Ramazan Bayramı, atölye"></div>
+                  <div class="full"><button class="btn btn-primary" type="submit">Kapat</button></div>
+                </form>
+                <div class="alert alert-warn hidden" id="closeWarn" style="margin-top:14px"></div>
+              </div>
+              <div><div class="table-wrap"><table class="data" id="tClose"></table></div></div>
+            </div>
+          </div>
+
+          <div data-pane="rapor" class="hidden">
+            <div class="filters">
+              <label>Başlangıç <input id="rBas" type="date"></label>
+              <label>Bitiş <input id="rBit" type="date"></label>
+              <button class="btn btn-soft btn-sm" id="csvR" type="button">Excel'e aktar (CSV)</button>
+            </div>
+            <div class="stats" id="rStats" style="margin:0 0 20px"></div>
+            <div class="grid g3" style="margin-bottom:20px">
+              <div class="card"><h3>İlçelere göre etkinlik</h3><div class="bars" id="bIlce"></div></div>
+              <div class="card"><h3>Kademelere göre öğrenci</h3><div class="bars" id="bKademe"></div></div>
+              <div class="card"><h3>En çok kullanılan araçlar</h3><div class="bars" id="bArac"></div></div>
+            </div>
+            <div class="table-wrap"><table class="data" id="tRep"></table></div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <div class="modal" id="modal" role="dialog" aria-modal="true" aria-labelledby="mTitle">
+    <div class="card">
+      <h3 id="mTitle"></h3>
+      <p id="mText" class="muted"></p>
+      <div class="field"><label for="mNot" id="mNotLbl">Not</label><textarea id="mNot" style="min-height:90px"></textarea><div class="hint">Bu not öğretmene gönderilen e-postada yer alır.</div></div>
+      <div class="btn-row" style="margin-top:16px;justify-content:flex-end"><button class="btn btn-soft" id="mCancel" type="button">Vazgeç</button><button class="btn" id="mOk" type="button"></button></div>
+    </div>
+  </div>
+
+  <footer id="site-footer"></footer>
+  <script src="assets/js/config.js"></script>
+  <script src="assets/js/data.js"></script>
+  <script src="assets/js/api.js"></script>
+  <script src="assets/js/layout.js"></script>
+  <script src="assets/js/yonetim.js"></script>
+</body>
+</html>

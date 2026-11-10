@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Canva Tasarım Laboratuvarı | Bursa</title>
+  <meta name="description" content="Bursa Canva Tasarım Laboratuvarı: sınıf tanıtımı, 360° tur, araçlar, öğretim materyalleri, randevu ve etkinlik raporu.">
+  <link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+  <header id="site-header"></header>
+
+  <main>
+    <section class="hero">
+      <div class="wrap">
+        <span class="hero-badge">Türkiye'de 10 ilde kurulan laboratuvarlardan biri</span>
+        <h1>Tasarla, üret,<br>birlikte öğren.</h1>
+        <p class="lead">Canva Tasarım Laboratuvarı; yapay zekâ, robotik, multimedya ve bilim araçlarını Canva ile buluşturan bir öğrenme alanıdır. İlkokuldan liseye kadar öğretmenler sınıflarıyla birlikte laboratuvarı kullanabilir.</p>
+        <div class="btn-row">
+          <a class="btn btn-white" href="randevu.html">Randevu al</a>
+          <a class="btn btn-ghost" href="sinifimiz.html">Sınıfı 360° gez</a>
+        </div>
+      </div>
+    </section>
+
+    <div class="wrap">
+      <div class="stats" id="stats"></div>
+    </div>
+
+    <section class="block">
+      <div class="wrap">
+        <div class="section-head">
+          <span class="eyebrow">Laboratuvarı keşfedin</span>
+          <h2>Dersinizi planlamak için ihtiyacınız olan her şey</h2>
+        </div>
+        <div class="grid g3" style="grid-template-columns:repeat(auto-fit,minmax(200px,1fr))">
+          <a class="card feature" href="sinifimiz.html">
+            <span class="ico" style="background:#00A7B5"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><ellipse cx="12" cy="12" rx="9" ry="3.5"/><path d="M12 3v18"/></svg></span>
+            <h3>Sınıfımız ve 360° tur</h3>
+            <p>Laboratuvarın fotoğraflarını inceleyin, sanal turla sınıfı her açıdan gezin.</p>
+            <span class="more">Sınıfı gez →</span>
+          </a>
+          <a class="card feature" href="araclar.html">
+            <span class="ico" style="background:#7D2AE8"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="7" width="16" height="12" rx="3"/><path d="M9 7V5h6v2M9 13h.01M15 13h.01M10 16h4"/></svg></span>
+            <h3>Araçlar</h3>
+            <p>Beş alt sistemdeki robotik, yapay zekâ, multimedya ve bilim araçlarını tanıyın.</p>
+            <span class="more">Araçları incele →</span>
+          </a>
+          <a class="card feature" href="materyaller.html">
+            <span class="ico" style="background:#E8467C"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5M9 13h6M9 17h4"/></svg></span>
+            <h3>Öğretim materyalleri</h3>
+            <p>Her aracın tanıtım, kurulum ve kullanım sunularını PDF olarak indirin.</p>
+            <span class="more">Materyallere git →</span>
+          </a>
+          <a class="card feature" href="randevu.html">
+            <span class="ico" style="background:#3B6FF5"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="16" rx="3"/><path d="M3 10h18M8 3v4M16 3v4M8 15l2.5 2.5L16 13"/></svg></span>
+            <h3>Randevu</h3>
+            <p>Hafta içi sabah ya da öğleden sonra oturumlarından birini seçerek dersinizi planlayın.</p>
+            <span class="more">Takvimi aç →</span>
+          </a>
+          <a class="card feature" href="rapor.html">
+            <span class="ico" style="background:#2BA84A"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg></span>
+            <h3>Etkinlik raporu</h3>
+            <p>Laboratuvardaki etkinliğinizden sonra katılım ve kullanılan araç bilgilerini bildirin.</p>
+            <span class="more">Rapor gönder →</span>
+          </a>
+        </div>
+        <div class="card" style="margin-top:20px">
+          <h3>Laboratuvar kullanım esasları</h3>
+          <ul class="info-list" id="rules" style="grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:12px 28px"></ul>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer id="site-footer"></footer>
+
+  <script src="assets/js/config.js"></script>
+  <script src="assets/js/data.js"></script>
+  <script src="assets/js/api.js"></script>
+  <script src="assets/js/layout.js"></script>
+  <script>
+    (function () {
+      const C = LAB_CONFIG, D = LAB_DATA;
+      document.getElementById("stats").innerHTML = [
+        [D.ARACLAR.length, "eğitim aracı"],
+        [D.ALT_SISTEMLER.length, "alt sistem"],
+        [C.BILGISAYAR_SAYISI, "dizüstü bilgisayar"],
+        [C.KAPASITE, "kişiye kadar grup"]
+      ].map(([b, s]) => `<div class="stat"><b>${b}</b><span>${s}</span></div>`).join("");
+      document.getElementById("rules").innerHTML = [
+        "Laboratuvar Pazartesi–Cuma günleri hizmet verir.",
+        ...C.OTURUMLAR.map(o => `${o.ad}: ${o.saat}`),
+        "Her öğretmen bir hafta içinde yalnızca bir oturum için randevu alabilir.",
+        `Gruplar en fazla ${C.KAPASITE} kişi olabilir.`,
+        "Randevular yönetici onayıyla kesinleşir; sonuç e-postayla bildirilir.",
+        "Etkinlik sonrasında rapor formunun doldurulması gerekir."
+      ].map(t => `<li>${esc(t)}</li>`).join("");
+    })();
+  </script>
+</body>
+</html>

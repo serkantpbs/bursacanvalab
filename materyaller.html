@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Öğretim Materyalleri | Canva Tasarım Laboratuvarı</title>
+  <link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+  <header id="site-header"></header>
+  <main>
+    <section class="page-hero"><div class="wrap">
+      <span class="eyebrow" style="color:#fff;opacity:.85">Öğretim materyalleri</span>
+      <h1>Araç sunuları</h1>
+      <p>Her araç için hazırlanan tanıtım, kurulum ve kullanım sunularını PDF olarak açabilir ya da indirebilirsiniz. Laboratuvar dersinizden önce kullanacağınız araçların sunularını incelemenizi öneririz.</p>
+    </div></section>
+    <section class="block">
+      <div class="wrap">
+        <div class="toolbar"><input class="search" id="q" type="search" placeholder="Sunu ara" aria-label="Sunu ara"></div>
+        <div id="groups"></div>
+      </div>
+    </section>
+  </main>
+  <footer id="site-footer"></footer>
+  <script src="assets/js/config.js"></script>
+  <script src="assets/js/data.js"></script>
+  <script src="assets/js/api.js"></script>
+  <script src="assets/js/layout.js"></script>
+  <script src="assets/js/icons.js"></script>
+  <script>
+    (function () {
+      const D = LAB_DATA, el = document.getElementById("groups"), q = document.getElementById("q");
+      function render() {
+        const term = q.value.trim().toLocaleLowerCase("tr");
+        el.innerHTML = D.ALT_SISTEMLER.map(s => {
+          const items = D.ARACLAR.filter(a => a.alt === s.id && (!term || a.ad.toLocaleLowerCase("tr").includes(term)));
+          if (!items.length) return "";
+          return `<div class="mat-group"><h3><i style="background:${s.renk}"></i>${esc(s.ad)}</h3><ul class="mat-list">${items.map(a => `
+            <li><span class="pdf">${LAB_ICONS.pdf}${esc(a.ad)} — Tanıtım, Kurulum ve Kullanım</span>
+            ${a.pdf ? `<span class="btn-row"><a class="btn btn-soft btn-sm" href="${esc(a.pdf)}" target="_blank" rel="noopener">Aç</a><a class="btn btn-primary btn-sm" href="${esc(a.pdf)}" download>İndir</a></span>` : `<span class="soon">Yakında</span>`}</li>`).join("")}</ul></div>`;
+        }).join("") || `<p class="muted">Aramanızla eşleşen bir sunu bulunamadı.</p>`;
+      }
+      q.addEventListener("input", render); render();
+    })();
+  </script>
+</body>
+</html>

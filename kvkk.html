@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>KVKK Aydınlatma Metni | Canva Tasarım Laboratuvarı</title>
+  <link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+  <header id="site-header"></header>
+  <main>
+    <section class="page-hero"><div class="wrap">
+      <h1>KVKK Aydınlatma Metni</h1>
+      <p>Canva Tasarım Laboratuvarı randevu ve etkinlik raporlama süreçlerinde kişisel verilerin işlenmesine ilişkin bilgilendirme</p>
+    </div></section>
+    <section class="block">
+      <div class="wrap" style="max-width:860px">
+        <div class="card kvkk-text">
+          <p>Bu aydınlatma metni, 6698 sayılı Kişisel Verilerin Korunması Kanunu'nun (KVKK) 10. maddesi ve Aydınlatma Yükümlülüğünün Yerine Getirilmesinde Uyulacak Usul ve Esaslar Hakkında Tebliğ kapsamında, veri sorumlusu sıfatıyla <b data-k="KURUM"></b> tarafından hazırlanmıştır.</p>
+
+          <h2>1. Veri sorumlusu</h2>
+          <p><span data-k="KURUM"></span> – <span data-k="SUBE"></span><br><span data-k="ADRES"></span></p>
+
+          <h2>2. İşlenen kişisel veriler</h2>
+          <p><b>Randevu formu:</b> ad soyad, görev yapılan okul, il ve ilçe, telefon numarası, e-posta adresi, etkinliğe katılacak kişi sayısı, randevu tarihi ve oturumu, isteğe bağlı olarak planlanan etkinlik açıklaması.</p>
+          <p><b>Etkinlik rapor formu:</b> öğretmenin ad soyadı, okul, il ve ilçe, kademe, etkinlik tarihi ve oturumu, katılan öğrenci sayıları (toplam, kız, erkek), etkinlik açıklaması ve kullanılan araçlar. Rapor formunda öğrencilere ait kimlik bilgisi toplanmaz; öğrenci bilgileri yalnızca sayısal ve istatistiksel olarak işlenir.</p>
+
+          <h2>3. İşleme amaçları</h2>
+          <p>Kişisel verileriniz; laboratuvar kullanım taleplerinin alınması, değerlendirilmesi ve planlanması, randevunun onay, ret veya iptal sonucunun size bildirilmesi, gerektiğinde sizinle iletişime geçilmesi, laboratuvar kullanımına ilişkin istatistik ve faaliyet raporlarının hazırlanması amaçlarıyla işlenir.</p>
+
+          <h2>4. Hukuki sebep ve toplama yöntemi</h2>
+          <p>Verileriniz bu internet sitesindeki formlar aracılığıyla elektronik ortamda toplanır ve KVKK'nın 5. maddesinin 2. fıkrasında yer alan "veri sorumlusunun hukuki yükümlülüğünü yerine getirebilmesi için zorunlu olması" ve "ilgili kişinin temel hak ve özgürlüklerine zarar vermemek kaydıyla, veri sorumlusunun meşru menfaatleri için veri işlenmesinin zorunlu olması" hukuki sebeplerine dayanılarak işlenir.</p>
+
+          <h2>5. Aktarım</h2>
+          <p>Kişisel verileriniz, yukarıdaki amaçlarla sınırlı olarak ve mevzuatın izin verdiği ölçüde Millî Eğitim Bakanlığı birimleri ile yetkili kamu kurum ve kuruluşlarına aktarılabilir. Verilerin saklanması ve bildirim e-postalarının gönderilmesi için bulut tabanlı hizmetlerden yararlanılabilir.</p>
+
+          <h2>6. Saklama süresi</h2>
+          <p>Verileriniz işleme amacının gerektirdiği süre ve ilgili mevzuatta öngörülen süreler boyunca saklanır; bu sürelerin sonunda silinir, yok edilir veya anonim hâle getirilir.</p>
+
+          <h2>7. Haklarınız</h2>
+          <p>KVKK'nın 11. maddesi uyarınca; kişisel verilerinizin işlenip işlenmediğini öğrenme, işlenmişse buna ilişkin bilgi talep etme, işlenme amacını ve amacına uygun kullanılıp kullanılmadığını öğrenme, yurt içinde veya yurt dışında aktarıldığı üçüncü kişileri bilme, eksik veya yanlış işlenmişse düzeltilmesini, şartları oluştuğunda silinmesini veya yok edilmesini isteme, bu işlemlerin aktarıldığı üçüncü kişilere bildirilmesini isteme, münhasıran otomatik sistemlerle analiz edilmesi sonucu aleyhinize bir sonuç çıkmasına itiraz etme ve kanuna aykırı işleme nedeniyle zarara uğramanız hâlinde zararın giderilmesini talep etme haklarına sahipsiniz.</p>
+          <p>Bu haklarınıza ilişkin taleplerinizi yukarıda belirtilen veri sorumlusu adresine yazılı olarak iletebilirsiniz.</p>
+
+          <div class="alert alert-warn" style="margin-top:24px">Not: Bu metin taslaktır. Yayına almadan önce kurumunuzun KVKK birimi tarafından gözden geçirilmesi önerilir.</div>
+        </div>
+      </div>
+    </section>
+  </main>
+  <footer id="site-footer"></footer>
+  <script src="assets/js/config.js"></script>
+  <script src="assets/js/data.js"></script>
+  <script src="assets/js/api.js"></script>
+  <script src="assets/js/layout.js"></script>
+  <script>document.querySelectorAll("[data-k]").forEach(el => el.textContent = LAB_CONFIG[el.dataset.k] || "");</script>
+</body>
+</html>
