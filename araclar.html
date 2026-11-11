@@ -10,9 +10,9 @@
   <header id="site-header"></header>
   <main>
     <section class="page-hero"><div class="wrap">
-      <span class="eyebrow" style="color:#fff;opacity:.85">Araçlar</span>
-      <h1>Laboratuvardaki malzemeler</h1>
-      <p>Araçlar beş alt sistemde toplanmıştır. Bir aracın tanıtım, kurulum ve kullanım sunusuna kartındaki düğmeden ulaşabilirsiniz.</p>
+      <div class="crumbs"><a href="index.html">Ana Sayfa</a> / Araçlar</div>
+      <h1>Araçlar</h1>
+      <p>Laboratuvardaki araçlar beş grupta toplanır. Her aracın tanıtım, kurulum ve kullanım sunusunu kartındaki düğmeden açabilirsiniz.</p>
     </div></section>
     <section class="block">
       <div class="wrap">
@@ -46,21 +46,25 @@
         list.innerHTML = items.map(a => {
           const s = subs[a.alt];
           return `<article class="tool-card" id="${esc(a.id)}">
-            <div class="tool-media" style="background:linear-gradient(135deg, ${s.renk}, ${s.renk}cc)">
+            <div class="tool-media" style="background:${s.renk}">
               ${a.gorsel ? `<img src="${esc(a.gorsel)}" alt="${esc(a.ad)}" loading="lazy">` : LAB_ICONS[a.alt]}
             </div>
             <div class="tool-body">
-              <span class="tag" style="background:${s.renk}">${esc(s.ad)}</span>
+              <span class="tag" style="--c:${s.renk}">${esc(s.ad)}</span>
               <h3>${esc(a.ad)}</h3>
               <p>${a.aciklama ? esc(a.aciklama) : "Açıklama yakında eklenecek."}</p>
-              ${a.pdf ? `<a class="btn btn-soft btn-sm" href="${esc(a.pdf)}" target="_blank" rel="noopener">Sunuyu aç (PDF)</a>` : `<span class="soon" style="margin-top:auto;align-self:flex-start">Sunu yakında</span>`}
+              <div class="tool-links">${a.pdf ? `<a class="btn btn-soft btn-sm" href="${esc(a.pdf)}" target="_blank" rel="noopener">Sunuyu aç (PDF)</a>` : `<span class="soon">Sunu yakında</span>`}
+              ${(a.ekler || []).map(e => `<a class="btn btn-soft btn-sm" href="${esc(e.pdf)}" target="_blank" rel="noopener">${esc(e.ad)}</a>`).join("")}</div>
             </div>
           </article>`;
         }).join("");
         document.getElementById("empty").classList.toggle("hidden", items.length > 0);
       }
       render();
-      if (location.hash) { const t = document.getElementById(decodeURIComponent(location.hash.slice(1))); if (t) setTimeout(() => t.scrollIntoView({ behavior: "smooth", block: "center" }), 100); }
+      const h = decodeURIComponent(location.hash.slice(1));
+      if (h.startsWith("alt-") && D.ALT_SISTEMLER.some(x => x.id === h.slice(4))) {
+        active = h.slice(4); f.querySelectorAll(".chip").forEach(c => c.classList.toggle("active", c.dataset.id === active)); render();
+      } else if (location.hash) { const t = document.getElementById(decodeURIComponent(location.hash.slice(1))); if (t) setTimeout(() => t.scrollIntoView({ behavior: "smooth", block: "center" }), 100); }
     })();
   </script>
 </body>

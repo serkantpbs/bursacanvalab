@@ -6,8 +6,8 @@
     ["sinifimiz.html", "Sınıfımız"],
     ["araclar.html", "Araçlar"],
     ["materyaller.html", "Öğretim Materyalleri"],
-    ["randevu.html", "Randevu"],
-    ["rapor.html", "Etkinlik Raporu"]
+    ["rapor.html", "Etkinlik Raporu"],
+    ["randevu.html", "Randevu"]
   ];
   const here = (location.pathname.split("/").pop() || "index.html").toLowerCase();
 
@@ -25,18 +25,17 @@
     const el = document.getElementById("site-header");
     if (!el) return;
     el.className = "site-header";
+    el.insertAdjacentHTML("beforebegin", `<div class="topband"><div class="wrap"><span><b>T.C. ${esc(C.KURUM)}</b></span><span>${esc(C.SUBE)}</span></div></div>`);
     el.innerHTML = `
-      <div class="wrap header-in">
+      <div class="wrap header-in" style="position:relative">
         <a class="brand" href="index.html">
           <img class="brand-logo" src="${esc(C.LOGO)}" alt="" onerror="this.remove()">
-          <span class="brand-mark" aria-hidden="true">
-            <svg viewBox="0 0 40 40"><defs><linearGradient id="bg1" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#00C4CC"/><stop offset=".55" stop-color="#6A5AE0"/><stop offset="1" stop-color="#7D2AE8"/></linearGradient></defs><rect width="40" height="40" rx="12" fill="url(#bg1)"/><path d="M12 26c3-8 6-12 9-12 2 0 3 1.5 3 3.5S22 22 18.5 22c-1 0-1.7-.3-2.2-.8M24 25c1.6 1 3.3 1 5-.4" stroke="#fff" stroke-width="2.6" fill="none" stroke-linecap="round"/></svg>
-          </span>
-          <span class="brand-text"><b>${esc(C.LAB_ADI)}</b><small>${esc(C.KURUM)}</small></span>
+          <span class="brand-mark" aria-hidden="true"></span>
+          <span class="brand-text"><b>${esc(C.LAB_ADI)}</b><small>${esc(C.IL)}</small></span>
         </a>
-        <button class="nav-toggle" aria-label="Menüyü aç" aria-expanded="false"><span></span><span></span><span></span></button>
+        <button class="nav-toggle" aria-label="Menüyü aç" aria-expanded="false">Menü</button>
         <nav class="main-nav" aria-label="Ana menü">
-          ${NAV.map(([h, t]) => `<a href="${h}" class="${here === h ? "active" : ""}${h === "randevu.html" ? " nav-cta" : ""}">${t}</a>`).join("")}
+          ${NAV.map(([h, t]) => `<a href="${h}" class="${here === h ? "active" : ""}${h === "randevu.html" ? " nav-cta" : ""}"${here === h ? ' aria-current="page"' : ""}>${h === "randevu.html" ? "Randevu al" : t}</a>`).join("")}
         </nav>
       </div>
       ${LabAPI.demo ? `<div class="demo-bar">Önizleme modu: Girilen veriler yalnızca bu tarayıcıda saklanır.</div>` : ""}`;
@@ -55,15 +54,15 @@
           <p>${esc(C.KURUM)}<br>${esc(C.SUBE)}</p>
         </div>
         <div>
-          <b>Adres</b>
+          <b>Adres ve iletişim</b>
           <p>${esc(C.ADRES)}${C.ILETISIM_EPOSTA ? `<br><a href="mailto:${esc(C.ILETISIM_EPOSTA)}">${esc(C.ILETISIM_EPOSTA)}</a>` : ""}${C.ILETISIM_TELEFON ? `<br>${esc(C.ILETISIM_TELEFON)}` : ""}</p>
         </div>
         <div>
           <b>Bağlantılar</b>
-          <p><a href="kvkk.html">KVKK Aydınlatma Metni</a><br><a href="yonetim.html">Yönetim paneli</a></p>
+          <p><a href="randevu.html">Randevu al</a><br><a href="rapor.html">Etkinlik raporu gönder</a><br><a href="kvkk.html">KVKK Aydınlatma Metni</a><br><a href="yonetim.html">Yönetim paneli</a></p>
         </div>
       </div>
-      <div class="wrap footer-note">Canva Tasarım Laboratuvarı · ${new Date().getFullYear()}</div>`;
+      <div class="wrap footer-note">© ${new Date().getFullYear()} ${esc(C.KURUM)}</div>`;
   }
 
   window.toast = (msg, type = "info") => {

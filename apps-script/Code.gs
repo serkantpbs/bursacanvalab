@@ -259,8 +259,8 @@ function eposta(to, konu, html) {
   MailApp.sendEmail({
     to: to, subject: konu, name: AYAR.LAB_ADI,
     htmlBody: '<div style="font-family:Arial,sans-serif;color:#1B1530;max-width:560px">' +
-      '<div style="background:linear-gradient(120deg,#00C4CC,#7D2AE8);color:#fff;padding:16px 20px;border-radius:12px 12px 0 0;font-weight:bold">' + AYAR.LAB_ADI + '</div>' +
-      '<div style="border:1px solid #E6E1F2;border-top:0;padding:20px;border-radius:0 0 12px 12px">' + html +
+      '<div style="background:#2C3FBF;color:#fff;padding:16px 20px;border-radius:8px 8px 0 0;font-weight:bold">' + AYAR.LAB_ADI + '</div>' +
+      '<div style="border:1px solid #E6E1F2;border-top:0;padding:20px;border-radius:0 0 8px 8px">' + html +
       '<p style="color:#5E5878;font-size:12px;margin-top:24px">' + AYAR.KURUM + '<br>Bu e-posta otomatik olarak gönderilmiştir.</p></div></div>'
   });
 }
