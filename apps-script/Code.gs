@@ -10,7 +10,7 @@
 var AYAR = {
   LAB_ADI: 'Canva Tasarım Laboratuvarı',
   KURUM: 'Bursa İl Millî Eğitim Müdürlüğü',
-  ADRES: 'BTSO Eğitim Vadisi YEĞİTEK Projeleri Araştırma ve Uygulama Merkezi, Bursa',
+  ADRES: 'BTSO Eğitim Vadisi YEĞİTEK Hizmetleri Şubesi',
   IL: 'Bursa',
   KAPASITE: 35,
   EN_ERKEN_GUN: 1,
@@ -186,7 +186,7 @@ function randevuDogrula(b, randevular, kapanislar) {
   if (!AYAR.OTURUMLAR[b.oturum]) return 'Geçersiz oturum.';
   if (!/^\d{4}-\d{2}-\d{2}$/.test(b.tarih)) return 'Geçersiz tarih.';
   var d = anahtardanTarih(b.tarih), gun = d.getDay(), bugun = anahtardanTarih(bugunAnahtar());
-  if (gun === 0 || gun === 6) return 'Randevular yalnızca Pazartesi–Cuma günleri için alınabilir.';
+  if (gun === 0 || gun === 6) return 'Randevular yalnızca pazartesi–cuma günleri için alınabilir.';
   if (d < gunEkle(bugun, AYAR.EN_ERKEN_GUN)) return 'Bu tarih için artık randevu alınamaz.';
   if (d > gunEkle(bugun, AYAR.EN_GEC_HAFTA * 7)) return 'Bu tarih henüz randevuya açılmadı.';
   if (AYAR.SABIT_TATILLER[b.tarih.slice(5)]) return 'Seçilen gün resmî tatildir.';
