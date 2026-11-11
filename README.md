@@ -7,7 +7,7 @@ Bursa İl Millî Eğitim Müdürlüğü, Yenilik ve Eğitim Teknolojileri Hizmet
 | Dosya | İçerik |
 |---|---|
 | `index.html` | Ana sayfa |
-| `sinifimiz.html` | Fotoğraf galerisi ve 360° sanal tur |
+| `sinifimiz.html` | Sınıf turu videosu, fotoğraf galerisi ve (görsel eklenince) 360° sanal tur |
 | `araclar.html` | Ana malzemeler (5 alt sistem, filtre ve arama) |
 | `materyaller.html` | Araç sunuları (PDF) |
 | `randevu.html` | Randevu takvimi ve formu |
@@ -17,7 +17,7 @@ Bursa İl Millî Eğitim Müdürlüğü, Yenilik ve Eğitim Teknolojileri Hizmet
 
 ## Randevu kuralları
 
-- Pazartesi–Cuma, iki oturum: **Sabah 09.30–12.30**, **Öğleden sonra 13.30–16.30**
+- Pazartesi–cuma günleri, iki oturum: **Sabah 09.30–12.30**, **Öğleden sonra 13.30–16.30**
 - Her oturum tek gruba verilir; dolu oturumlar takvimde yalnızca "Dolu" görünür
 - Bir öğretmen (aynı e-posta ya da telefon) bir hafta içinde yalnızca bir oturum alabilir
 - En fazla **35 kişi**; üzerindeki sayılarda "sınıf kapasitesi yeterli değil" uyarısı verilir ve form gönderilmez
@@ -32,7 +32,8 @@ Tüm içerik `assets/js/data.js` dosyasındadır:
 - **Araç görseli ve açıklaması:** ilgili aracın `gorsel` ve `aciklama` alanları. Görselleri `assets/img/araclar/` klasörüne koyun.
 - **Sunu PDF'leri:** PDF'i `materyaller/` klasörüne koyup aracın `pdf` alanına yolunu yazın (ör. `"materyaller/arduino-baslangic-kiti.pdf"`). Boş bırakılan araçlarda "Yakında" görünür.
 - **Galeri:** `GALERI` listesine `{ src: "assets/img/galeri/1.jpg", baslik: "Genel görünüm" }` ekleyin.
-- **360° tur:** Insta360 ile çekilen panoramayı eş dikdörtgensel (equirectangular) JPG olarak dışa aktarın (2:1 oran, genişliği 4096 piksel önerilir). `assets/img/360/` klasörüne koyup `SAHNELER` listesine ekleyin. Tıklanabilir noktanın konumunu bulmak için `sinifimiz.html?konum` adresini açın ve görselde aracın üzerine tıklayın; ekranın altında `pitch` ve `yaw` değerleri görünür. Bu değerleri `sicakNoktalar` listesine yazın.
+- **Sınıf turu videosu:** `assets/video/` klasöründeki video `TUR_VIDEO` alanından gösterilir. Videoyu değiştirmek için aynı adla yeni dosya koymanız yeterli.
+- **360° tur:** Insta360 ile çekilen panoramayı eş dikdörtgensel (equirectangular) JPG olarak dışa aktarın (2:1 oran, genişliği 4096 piksel önerilir). `assets/img/360/` klasörüne koyup `SAHNELER` listesine ekleyin. Şu anki 360° görsel, sınıfın ortasından çekilen 6 fotoğrafın birleştirilmesiyle hazırlandı (`haov: 360, vaov: 80`). Insta360 ile tek çekimde tam bir küre görüntüsü alırsanız `haov` ve `vaov` satırlarını silip yeni görseli koymanız yeterli. Tıklanabilir noktanın konumunu bulmak için `sinifimiz.html?konum` adresini açın ve görselde aracın üzerine tıklayın; ekranın altında `pitch` ve `yaw` değerleri görünür. Bu değerleri `sicakNoktalar` listesine yazın.
 - **Logo:** `assets/img/logo.png` dosyasını eklemeniz yeterli.
 - **Adres, iletişim, kapasite, oturum saatleri:** `assets/js/config.js`
 

@@ -10,8 +10,8 @@
   <header id="site-header"></header>
   <main>
     <section class="page-hero"><div class="wrap">
-      <span class="eyebrow" style="color:#fff;opacity:.85">Etkinlik raporu</span>
-      <h1>Etkinliğinizi bildirin</h1>
+      <div class="crumbs"><a href="index.html">Ana Sayfa</a> / Etkinlik raporu</div>
+      <h1>Etkinlik raporu</h1>
       <p>Laboratuvardaki etkinliğiniz tamamlandıktan sonra bu formu doldurun. Bilgiler laboratuvarın kullanım istatistiklerini oluşturmak için kullanılır.</p>
     </div></section>
 
@@ -25,12 +25,12 @@
                 <input id="kod" name="kod" placeholder="CTL-XXXXXX" style="flex:1 1 200px;text-transform:uppercase">
                 <button class="btn btn-soft" id="lookup" type="button">Bilgileri getir</button>
               </div>
-              <div class="hint">Randevu kodunuzu girerseniz okul, ilçe, ad soyad ve tarih bilgileri kendiliğinden doldurulur.</div>
+              <div class="hint">Randevu kodunuzu girerseniz okul, ilçe, ad, soyad ve tarih bilgileri kendiliğinden doldurulur.</div>
             </div>
 
             <div class="form-grid">
               <div class="field"><label for="okul">Okul adı <span class="req">*</span></label><input id="okul" required></div>
-              <div class="field"><label for="adSoyad">Öğretmenin adı soyadı <span class="req">*</span></label><input id="adSoyad" autocomplete="name" required></div>
+              <div class="field"><label for="adSoyad">Öğretmenin adı ve soyadı <span class="req">*</span></label><input id="adSoyad" autocomplete="name" required></div>
               <div class="field"><label for="il">İl</label><input id="il" readonly></div>
               <div class="field"><label for="ilce">İlçe <span class="req">*</span></label><select id="ilce" required></select></div>
               <div class="field"><label for="tarih">Etkinlik tarihi <span class="req">*</span></label><input id="tarih" type="date" required></div>
@@ -43,7 +43,7 @@
               </div>
               <div class="field full"><label for="aciklama">Yapılan etkinliğin kısa açıklaması <span class="req">*</span></label><textarea id="aciklama" maxlength="1000" required placeholder="Etkinliğin konusu, amacı ve öğrencilerin ortaya koyduğu ürünler"></textarea><div class="hint"><span id="count">0</span> / 1000 karakter</div></div>
               <div class="field full"><span class="lbl">Kullanılan araçlar <span class="req">*</span></span><div class="tools-pick" id="tools"></div></div>
-              <div class="full"><label class="check"><input type="checkbox" id="kvkk"><span><a href="kvkk.html" target="_blank" rel="noopener">KVKK Aydınlatma Metni</a>'ni okudum; bu formdaki bilgilerin laboratuvar kullanım raporlaması amacıyla işlenmesini kabul ediyorum. <span style="color:var(--hata)">*</span></span></label></div>
+              <div class="full"><label class="check"><input type="checkbox" id="kvkk"><span><a href="kvkk.html" target="_blank" rel="noopener">KVKK Aydınlatma Metni</a>'ni okudum; bu formdaki bilgilerin laboratuvar kullanım raporlaması amacıyla işlenmesini kabul ediyorum. <span style="color:var(--red)">*</span></span></label></div>
             </div>
             <div class="alert alert-err hidden" id="formErr" role="alert" style="margin-top:16px"></div>
             <div class="btn-row" style="margin-top:18px"><button class="btn btn-primary" id="submit" type="submit">Raporu gönder</button></div>

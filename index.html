@@ -15,12 +15,11 @@
       <div class="wrap hero-grid">
         <div class="hero-text">
           <h1>Canva Tasarım Laboratuvarı</h1>
-          <p class="lead">Robotik setlerden 3B yazıcıya, mikroskoptan video stüdyosuna kadar birçok aracı Canva ile aynı derste kullanabileceğiniz bir sınıf. İlkokuldan liseye bütün öğretmenlerimiz öğrencileriyle birlikte gelebilir.</p>
+          <p class="lead motto">Bugün ne tasarlayacaksın?<span>Canva</span></p>
           <div class="btn-row">
             <a class="btn btn-primary" href="randevu.html">Randevu al</a>
             <a class="btn btn-white" href="sinifimiz.html">Sınıfı görün</a>
           </div>
-          <dl class="hero-facts" id="facts"></dl>
         </div>
         <figure class="hero-photo" style="margin-top:0;margin-bottom:0">
           <img src="assets/img/galeri/sinif-01.jpg" alt="Laboratuvarda yuvarlak çalışma masaları ve renkli duvar resimleri">
@@ -55,17 +54,6 @@
       </div>
     </section>
 
-    <section class="block">
-      <div class="wrap">
-        <div class="info-box">
-          <div>
-            <h2 style="font-size:1.45rem">Çalışma saatleri ve kurallar</h2>
-            <dl id="hours"></dl>
-          </div>
-          <a class="btn btn-primary" href="randevu.html">Takvimi aç</a>
-        </div>
-      </div>
-    </section>
   </main>
 
   <footer id="site-footer"></footer>
@@ -77,13 +65,6 @@
   <script>
     (function () {
       const C = LAB_CONFIG, D = LAB_DATA;
-      const [s, o] = C.OTURUMLAR;
-      document.getElementById("facts").innerHTML =
-        `<dt>Günler</dt><dd>Pazartesi – Cuma</dd><dt>Yer</dt><dd>${esc(C.ADRES)}</dd>`;
-      document.getElementById("hours").innerHTML = [
-        ["Sabah oturumu", s.saat], ["Öğleden sonra oturumu", o.saat], ["Öğle arası", "12.30 – 13.30 (randevu alınamaz)"],
-        ["Grup büyüklüğü", `En fazla ${C.KAPASITE} kişi`], ["Randevu sıklığı", "Her öğretmen haftada bir oturum"]
-      ].map(([a, b]) => `<dt>${esc(a)}</dt><dd>${esc(b)}</dd>`).join("");
       const ornek = { yz: "Raspberry Pi, UNIHIKER, uKit robotları", sanat: "Fotoğraf makinesi, 360° kamera, mikrofonlar, VR gözlük",
         kod: "Arduino, micro:bit, dronlar, VEX akıllı fabrika", sinif: "Etkileşimli panel, dizüstü bilgisayarlar, 3B yazıcı",
         bilim: "Mikroskoplar, teleskop, yenilenebilir enerji setleri, hava istasyonu" };

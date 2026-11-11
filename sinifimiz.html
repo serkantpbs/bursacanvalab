@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Sınıfımız ve 360° Tur | Canva Tasarım Laboratuvarı</title>
+  <title>Sınıfımız | Canva Tasarım Laboratuvarı</title>
   <link rel="stylesheet" href="assets/vendor/pannellum/pannellum.css">
   <link rel="stylesheet" href="assets/css/style.css">
 </head>
@@ -11,28 +11,37 @@
   <header id="site-header"></header>
   <main>
     <section class="page-hero"><div class="wrap">
-      <span class="eyebrow" style="color:#fff;opacity:.85">Sınıfımız</span>
-      <h1>Laboratuvarı yakından tanıyın</h1>
-      <p>Sanal turda fareyle sürükleyerek ya da telefonunuzu çevirerek sınıfı her yönden inceleyebilirsiniz. Mor noktalara tıkladığınızda o aracın bilgi kartı açılır.</p>
+      <div class="crumbs"><a href="index.html">Ana Sayfa</a> / Sınıfımız</div>
+      <h1>Sınıfımız</h1>
+      <p>360° görünüm, tur videosu ve fotoğraflarla laboratuvarı yakından tanıyın; dersinizi planlamadan önce alanları ve araçları görün.</p>
     </div></section>
 
-    <section class="block">
+    <section class="block hidden" id="panoBlock">
       <div class="wrap">
         <div class="section-head">
-          <span class="eyebrow">360° sanal tur</span>
-          <h2>Sınıfın içinde dolaşın</h2>
+          <h2>360° sınıf görünümü</h2>
         </div>
         <div class="scene-tabs" id="sceneTabs"></div>
         <div id="pano" class="pano" aria-label="360 derece sınıf görünümü"></div>
-        <p class="muted" style="margin-top:10px;font-size:.88rem">İpucu: Tam ekran düğmesiyle turu büyütebilir, fare tekerleğiyle yakınlaştırabilirsiniz.</p>
+        <p class="muted" style="margin-top:10px;font-size:.9rem">Görüntüyü fareyle ya da parmağınızla sürükleyerek sınıfın her yönüne bakabilirsiniz. Tam ekran düğmesiyle büyütebilirsiniz.</p>
+      </div>
+    </section>
+
+    <section class="block" id="turBlock">
+      <div class="wrap tour-wrap">
+        <div><video id="turVideo" class="tour-video" controls muted playsinline loop preload="metadata"></video></div>
+        <div>
+          <h2>Sınıf turu</h2>
+          <p class="muted">Videoda laboratuvarın tüm alanlarını görebilirsiniz: grup çalışma masaları, bilgisayar istasyonları, yeşil perdeli fotoğraf ve video stüdyosu, 3B yazıcı, mikroskop ve teleskop köşeleri, etkileşimli panel ve araç dolapları.</p>
+          <div class="btn-row"><a class="btn btn-primary" href="araclar.html">Araçları incele</a><a class="btn btn-soft" href="randevu.html">Randevu al</a></div>
+        </div>
       </div>
     </section>
 
     <section class="block" style="padding-top:0">
       <div class="wrap">
         <div class="section-head">
-          <span class="eyebrow">Fotoğraf galerisi</span>
-          <h2>Sınıftan kareler</h2>
+          <h2>Fotoğraflar</h2>
         </div>
         <div class="gallery" id="gallery"></div>
       </div>
@@ -52,13 +61,16 @@
       /* --- 360° tur --- */
       const panoEl = document.getElementById("pano");
       const tabs = document.getElementById("sceneTabs");
-      if (!D.SAHNELER.length || !window.pannellum) {
-        panoEl.innerHTML = `<div class="ph" style="height:100%;aspect-ratio:auto">360° görseller yakında eklenecek.</div>`;
-      } else {
+      const tv = D.TUR_VIDEO;
+      if (tv && tv.src) { const v = document.getElementById("turVideo"); v.src = tv.src; if (tv.kapak) v.poster = tv.kapak; }
+      else document.getElementById("turBlock").classList.add("hidden");
+      if (D.SAHNELER.length && window.pannellum) {
+        document.getElementById("panoBlock").classList.remove("hidden");
         const scenes = {};
         D.SAHNELER.forEach(s => {
           scenes[s.id] = {
             title: s.baslik, type: "equirectangular", panorama: s.gorsel, autoLoad: true,
+            ...(s.haov ? { haov: s.haov, vaov: s.vaov, minPitch: -s.vaov / 2, maxPitch: s.vaov / 2 } : {}),
             hotSpots: (s.sicakNoktalar || []).map(h => ({
               pitch: h.pitch, yaw: h.yaw, cssClass: "lab-hs", text: h.metin,
               createTooltipFunc: (div, txt) => { div.title = txt; div.setAttribute("aria-label", txt); },
@@ -68,7 +80,7 @@
           };
         });
         const viewer = pannellum.viewer("pano", {
-          default: { firstScene: D.SAHNELER[0].id, autoRotate: -2, sceneFadeDuration: 600, hfov: 100 },
+          default: { firstScene: D.SAHNELER[0].id, autoRotate: -1.5, autoRotateInactivityDelay: 4000, sceneFadeDuration: 600, hfov: 100, minHfov: 50, maxHfov: 120, showZoomCtrl: true },
           scenes, strings: { loadButtonLabel: "Turu yükle", loadingLabel: "Yükleniyor…" }
         });
         /* Sıcak nokta konumu bulma: sinifimiz.html?konum adresiyle açıp görsele tıklayın */
