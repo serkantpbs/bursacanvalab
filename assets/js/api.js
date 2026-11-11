@@ -32,7 +32,7 @@
     if (kisi > C.KAPASITE) return `Sınıf kapasitesi ${C.KAPASITE} kişi ile sınırlıdır. ${kisi} kişilik grup için randevu onaylanamaz.`;
     if (!C.OTURUMLAR.some(o => o.id === b.oturum)) return "Geçersiz oturum.";
     const d = fromKey(b.tarih), wd = d.getDay();
-    if (wd === 0 || wd === 6) return "Randevular yalnızca Pazartesi–Cuma günleri için alınabilir.";
+    if (wd === 0 || wd === 6) return "Randevular yalnızca pazartesi–cuma günleri için alınabilir.";
     if (d < addDays(today(), C.EN_ERKEN_GUN)) return "Bu tarih için artık randevu alınamaz.";
     if (d > addDays(today(), C.EN_GEC_HAFTA * 7)) return "Bu tarih henüz randevuya açılmadı.";
     if (holidayOf(b.tarih)) return "Seçilen gün resmî tatildir.";

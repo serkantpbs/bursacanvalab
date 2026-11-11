@@ -9,13 +9,13 @@
 
   /* Kurallar kutusu */
   $("rulesBox").innerHTML = [
-    "Randevular Pazartesi–Cuma günleri içindir.",
-    `İki oturum vardır: ${C.OTURUMLAR.map(o => `${o.ad.replace(" oturumu", "")} ${o.saat}`).join(", ")}.`,
+    "Laboratuvar pazartesi–cuma günleri randevuyla kullanılır.",
+    `İki oturum vardır: ${C.OTURUMLAR.map(o => `${o.ad.replace(" oturumu", "").toLocaleLowerCase("tr")} ${o.saat}`).join(" ve ")}.`,
     "Öğle arası (12.30–13.30) randevuya kapalıdır.",
     "Bir öğretmen aynı hafta içinde yalnızca bir oturum seçebilir.",
     `Grup en fazla ${C.KAPASITE} kişi olabilir. Laboratuvarda ${C.BILGISAYAR_SAYISI} dizüstü bilgisayar bulunur.`,
     "Talepler yönetici onayıyla kesinleşir; sonuç e-postayla bildirilir.",
-    "Takvimde dolu oturumlar yalnızca \"Dolu\" olarak görünür, kişisel bilgiler paylaşılmaz."
+    "Takvimde dolu oturumlar yalnızca \"Dolu\" olarak görünür; kişisel bilgiler paylaşılmaz."
   ].map((t, i) => `<div><b class="n">${i + 1}</b><span>${esc(t)}</span></div>`).join("");
 
   /* Form hazırlığı */
@@ -23,7 +23,7 @@
   fillIlceler($("ilce"));
   phoneMask($("telefon"));
   $("kisi").max = C.KAPASITE;
-  $("kisiHint").textContent = `En fazla ${C.KAPASITE} kişi (öğretmenler dahil).`;
+  $("kisiHint").textContent = `En fazla ${C.KAPASITE} kişi (öğretmenler dâhil).`;
 
   function checkKisi() {
     const n = Number($("kisi").value), f = $("kisiField");

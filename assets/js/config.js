@@ -16,7 +16,7 @@ window.LAB_CONFIG = {
   LAB_ADI: "Canva Tasarım Laboratuvarı",
   KURUM: "Bursa İl Millî Eğitim Müdürlüğü",
   SUBE: "Yenilik ve Eğitim Teknolojileri Hizmetleri Şubesi",
-  ADRES: "BTSO Eğitim Vadisi YEĞİTEK Projeleri Araştırma ve Uygulama Merkezi, Bursa",
+  ADRES: "BTSO Eğitim Vadisi YEĞİTEK Hizmetleri Şubesi",
   ILETISIM_EPOSTA: "",          /* örn. "canvalab@meb.gov.tr" — boşsa gösterilmez */
   ILETISIM_TELEFON: "",
   LOGO: "assets/img/logo.png",  /* Logo dosyası yoksa yalnızca yazı görünür */

@@ -35,7 +35,7 @@
         </a>
         <button class="nav-toggle" aria-label="Menüyü aç" aria-expanded="false">Menü</button>
         <nav class="main-nav" aria-label="Ana menü">
-          ${NAV.map(([h, t]) => `<a href="${h}" class="${here === h ? "active" : ""}${h === "randevu.html" ? " nav-cta" : ""}"${here === h ? ' aria-current="page"' : ""}>${h === "randevu.html" ? "Randevu al" : t}</a>`).join("")}
+          ${NAV.map(([h, t]) => `<a href="${h}" class="${here === h ? "active" : ""}${h === "randevu.html" ? " nav-cta" : ""}"${here === h ? ' aria-current="page"' : ""}>${h === "randevu.html" ? "Randevu Al" : t}</a>`).join("")}
         </nav>
       </div>
       ${LabAPI.demo ? `<div class="demo-bar">Önizleme modu: Girilen veriler yalnızca bu tarayıcıda saklanır.</div>` : ""}`;
