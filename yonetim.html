@@ -31,6 +31,7 @@
           <div class="tabs" role="tablist">
             <button class="active" data-tab="bekleyen" role="tab">Bekleyen talepler<span class="count" id="pendingCount">0</span></button>
             <button data-tab="tum" role="tab">Tüm randevular</button>
+            <button data-tab="duyuru" role="tab">Duyurular</button>
             <button data-tab="kapat" role="tab">Gün / oturum kapat</button>
             <button data-tab="rapor" role="tab">Raporlar ve istatistik</button>
           </div>
@@ -47,6 +48,28 @@
             <div class="table-wrap"><table class="data" id="tAll"></table></div>
           </div>
 
+          <div data-pane="duyuru" class="hidden">
+            <div class="grid" style="grid-template-columns:minmax(0,1fr) minmax(0,1.2fr);align-items:start" id="annLayout">
+              <div class="card">
+                <h3 id="annFormTitle">Yeni duyuru</h3>
+                <form id="annForm" class="form-grid" novalidate>
+                  <input type="hidden" id="aId">
+                  <div class="field full"><label for="aBaslik">Başlık <span class="req">*</span></label><input id="aBaslik" maxlength="200" required></div>
+                  <div class="field"><label for="aTur">Tür</label><select id="aTur"><option value="duyuru">Duyuru</option><option value="atolye">Atölye</option><option value="kapali">Laboratuvar kapalı</option></select></div>
+                  <div class="field" style="display:flex;align-items:flex-end"><label class="check" style="margin-bottom:10px"><input type="checkbox" id="aOne"><span>Bütün sayfaların üstünde öne çıkar</span></label></div>
+                  <div class="field full"><label for="aMetin">Metin <span class="req">*</span></label><textarea id="aMetin" maxlength="2000" required></textarea></div>
+                  <div class="field"><label for="aYayin">Yayın tarihi</label><input id="aYayin" type="date"><div class="hint">Boş bırakılırsa bugün yayımlanır.</div></div>
+                  <div class="field"><label for="aBitis">Bitiş tarihi</label><input id="aBitis" type="date"><div class="hint">Bu tarihten sonra arşive geçer.</div></div>
+                  <div class="field full"><label for="aLink">Bağlantı (isteğe bağlı)</label><input id="aLink" type="url" placeholder="https://"><div class="hint">Atölye duyurularında "Başvur" düğmesi olarak görünür.</div></div>
+                  <div class="field full"><label for="aGorsel">Görsel adresi (isteğe bağlı)</label><input id="aGorsel" placeholder="https:// ya da assets/img/duyuru/afis.jpg"></div>
+                  <div class="alert alert-err hidden full" id="annErr"></div>
+                  <div class="full btn-row"><button class="btn btn-primary" type="submit" id="annSubmit">Yayımla</button><button class="btn btn-ghost hidden" type="button" id="annCancel">Düzenlemeyi bırak</button></div>
+                </form>
+              </div>
+              <div><div class="table-wrap"><table class="data" id="tAnn"></table></div></div>
+            </div>
+          </div>
+
           <div data-pane="kapat" class="hidden">
             <div class="grid g2" style="align-items:start">
               <div class="card">
@@ -57,6 +80,7 @@
                   <div class="field"><label for="cBit">Bitiş tarihi (isteğe bağlı)</label><input id="cBit" type="date"></div>
                   <div class="field"><label for="cOt">Kapsam</label><select id="cOt"></select></div>
                   <div class="field"><label for="cNeden">Neden</label><input id="cNeden" placeholder="ör. Ramazan Bayramı, atölye"></div>
+                  <div class="full"><label class="check"><input type="checkbox" id="cDuyuru"><span>Bunu duyuru olarak da yayımla (sayfaların üstünde öne çıkar, kapanışın son günü kalkar)</span></label></div>
                   <div class="full"><button class="btn btn-primary" type="submit">Kapat</button></div>
                 </form>
                 <div class="alert alert-warn hidden" id="closeWarn" style="margin-top:14px"></div>

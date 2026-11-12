@@ -27,6 +27,13 @@
       </div>
     </section>
 
+    <section class="block hidden" id="annBlock">
+      <div class="wrap">
+        <div class="section-head section-row" style="max-width:none"><h2>Duyurular</h2><a href="duyurular.html">Tüm duyurular</a></div>
+        <div class="ann-list" id="annList"></div>
+      </div>
+    </section>
+
     <section class="block">
       <div class="wrap">
         <div class="section-head"><h2>Laboratuvarı nasıl kullanırım?</h2></div>
@@ -70,6 +77,11 @@
         bilim: "Mikroskoplar, teleskop, yenilenebilir enerji setleri, hava istasyonu" };
       document.getElementById("subs").innerHTML = D.ALT_SISTEMLER.map(a =>
         `<li><a href="araclar.html#alt-${a.id}"><i style="background:${a.renk}"></i><span><b>${esc(a.ad)}</b><span>${esc(ornek[a.id] || "")}</span></span></a></li>`).join("");
+      LabAnnouncements.then(r => {
+        const list = (r.aktif || []).slice(0, 3); if (!list.length) return;
+        document.getElementById("annList").innerHTML = list.map(a => renderAnnouncement(a, false)).join("");
+        document.getElementById("annBlock").classList.remove("hidden");
+      });
     })();
   </script>
 </body>

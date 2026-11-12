@@ -6,7 +6,8 @@ Bursa İl Millî Eğitim Müdürlüğü, Yenilik ve Eğitim Teknolojileri Hizmet
 
 | Dosya | İçerik |
 |---|---|
-| `index.html` | Ana sayfa |
+| `index.html` | Ana sayfa (güncel 3 duyuru dahil) |
+| `duyurular.html` | Güncel duyurular ve geçmiş duyuru arşivi |
 | `sinifimiz.html` | Sınıf turu videosu, fotoğraf galerisi ve (görsel eklenince) 360° sanal tur |
 | `araclar.html` | Ana malzemeler (5 alt sistem, filtre ve arama) |
 | `materyaller.html` | Araç sunuları (PDF) |
@@ -37,6 +38,10 @@ Tüm içerik `assets/js/data.js` dosyasındadır:
 - **Logo:** `assets/img/logo.png` dosyasını eklemeniz yeterli.
 - **Adres, iletişim, kapasite, oturum saatleri:** `assets/js/config.js`
 
+## Duyurular
+
+Duyurular yönetim panelindeki **Duyurular** sekmesinden eklenir, düzenlenir ve silinir. Türler: Duyuru, Atölye, Laboratuvar kapalı. Bitiş tarihi geçen duyuru kendiliğinden arşive geçer. "Öne çıkar" işaretli duyuru bütün sayfaların üstünde şerit olarak görünür. Gün kapatırken "duyuru olarak da yayımla" seçilirse kapalı gün duyurusu kendiliğinden oluşur.
+
 ## Çalışma modları
 
 ### 1. Önizleme (demo) modu
@@ -44,10 +49,10 @@ Tüm içerik `assets/js/data.js` dosyasındadır:
 
 ### 2. Gerçek kurulum (Google E-Tablolar + Apps Script)
 
-1. Google Drive'da yeni bir E-Tablo oluşturun (ör. "Canva Lab Randevu Sistemi").
+1. Veri tablosu hazır: Google Drive > "Canva Tasarım Laboratuvarı" klasöründeki "Canva Tasarım Laboratuvarı – Randevu ve Rapor Verileri" e-tablosu (Randevular, Raporlar, Kapanislar, Duyurular sayfalarıyla). Bu tabloyu açın.
 2. **Uzantılar > Apps Script** menüsünü açın. `apps-script/Code.gs` içeriğini düzenleyiciye yapıştırın.
 3. **Proje Ayarları**'nda saat dilimini `(GMT+03:00) İstanbul` yapın.
-4. Üstteki işlev listesinden `kurulum` işlevini seçip **Çalıştır**'a basın, izinleri verin. Bu işlem üç sayfayı (Randevular, Raporlar, Kapanislar) oluşturur.
+4. Üstteki işlev listesinden `kurulum` işlevini seçip **Çalıştır**'a basın, izinleri verin. Sayfalar zaten hazır olduğu için bu adım yalnızca yönetici şifresini oluşturur.
 5. **Proje Ayarları > Komut dosyası özellikleri** bölümünde:
    - `ADMIN_PASSWORD`: yönetim paneli şifresi (kurulumun oluşturduğu geçici şifreyi değiştirin)
    - `ADMIN_EMAIL`: yeni talep bildirimlerinin gideceği e-posta (isteğe bağlı)

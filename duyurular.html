@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Duyurular | Canva Tasarım Laboratuvarı</title>
+  <link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+  <header id="site-header"></header>
+  <main>
+    <section class="page-hero"><div class="wrap">
+      <div class="crumbs"><a href="index.html">Ana Sayfa</a> / Duyurular</div>
+      <h1>Duyurular</h1>
+      <p>Atölyeler, etkinlikler ve laboratuvarın kapalı olacağı günlerle ilgili güncel bilgiler.</p>
+    </div></section>
+    <section class="block">
+      <div class="wrap" style="max-width:900px">
+        <div class="ann-stack" id="list"><p class="muted">Duyurular yükleniyor…</p></div>
+        <details class="archive hidden" id="archive">
+          <summary>Geçmiş duyurular</summary>
+          <ul id="archiveList"></ul>
+        </details>
+      </div>
+    </section>
+  </main>
+  <footer id="site-footer"></footer>
+  <script src="assets/js/config.js"></script>
+  <script src="assets/js/data.js"></script>
+  <script src="assets/js/api.js"></script>
+  <script src="assets/js/layout.js"></script>
+  <script>
+    LabAnnouncements.then(r => {
+      const list = document.getElementById("list");
+      list.innerHTML = (r.aktif || []).length ? r.aktif.map(a => renderAnnouncement(a, true)).join("")
+        : `<p class="muted">Şu anda güncel bir duyuru bulunmuyor.</p>`;
+      if ((r.arsiv || []).length) {
+        document.getElementById("archiveList").innerHTML = r.arsiv.map(a =>
+          `<li><time>${esc(trDate(a.yayin || a.bitis, false))}</time><span><b>${esc(a.baslik)}</b><br><span class="muted">${esc(a.metin)}</span></span></li>`).join("");
+        document.getElementById("archive").classList.remove("hidden");
+      }
+      if (location.hash) { const t = document.getElementById(decodeURIComponent(location.hash.slice(1))); if (t) t.scrollIntoView({ block: "center" }); }
+    });
+  </script>
+</body>
+</html>
