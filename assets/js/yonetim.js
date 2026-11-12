@@ -37,7 +37,7 @@
   const contact = b => `${esc(b.eposta)}<br><span class="muted">${esc(b.telefon)}</span>`;
   const when = b => `<b>${esc(trDate(b.tarih))}</b><br><span class="muted">${esc((C.OTURUMLAR.find(o => o.id === b.oturum) || {}).ad || b.oturum)}</span>`;
 
-  function renderAll() { renderPending(); renderAllBookings(); renderClosures(); renderReports(); }
+  function renderAll() { renderPending(); renderAllBookings(); renderClosures(); renderReports(); renderAnn(); }
 
   function renderPending() {
     const list = sortB(S.randevular.filter(b => b.durum === "beklemede"));
@@ -118,7 +118,8 @@
     const tarihler = [];
     for (let d = U.fromKey(bas); d <= U.fromKey(bit); d = U.addDays(d, 1)) if (d.getDay() > 0 && d.getDay() < 6) tarihler.push(U.toKey(d));
     if (!tarihler.length) { toast("Seçilen aralıkta hafta içi gün yok.", "err"); return; }
-    const r = await LabAPI.admin("close", pw, { tarihler, oturum: ot, neden: $("cNeden").value.trim() });
+    const r = await LabAPI.admin("close", pw, { tarihler, oturum: ot, neden: $("cNeden").value.trim(), duyuru: $("cDuyuru").checked });
+    clearAnnCache();
     if (!r.ok) { toast(r.error, "err"); return; }
     const hit = S.randevular.filter(b => ["beklemede", "onaylandi"].includes(b.durum) && tarihler.includes(b.tarih) && (ot === "tum" || b.oturum === ot));
     $("closeWarn").classList.toggle("hidden", !hit.length);
@@ -170,4 +171,59 @@
   $("csvR").addEventListener("click", () => csv("etkinlik_raporlari",
     ["Tarih", "Oturum", "Randevu kodu", "Öğretmen", "Okul", "İl", "İlçe", "Kademe", "Öğrenci", "Kız", "Erkek", "Kullanılan araçlar", "Açıklama", "Gönderim"],
     filteredReports().map(r => [r.tarih, r.oturum, r.kod, r.adSoyad, r.okul, r.il || C.IL, r.ilce, r.kademe, r.ogrenci, r.kiz, r.erkek, (r.araclar || []).map(a => aracAd[a] || a).join(", "), r.aciklama, r.olusturma])));
+  /* Duyurular */
+  function clearAnnCache() { try { sessionStorage.removeItem("labDuyuru_v1"); } catch (e) {} }
+  window.clearAnnCache = clearAnnCache;
+  function annState(a) {
+    const t = U.toKey(U.today());
+    if (a.bitis && a.bitis < t) return ["iptal", "Arşivde"];
+    if (a.yayin && a.yayin > t) return ["beklemede", "Zamanlanmış"];
+    return ["onaylandi", "Yayında"];
+  }
+  function renderAnn() {
+    const list = [...(S.duyurular || [])].sort((a, b) => String(b.yayin).localeCompare(String(a.yayin)));
+    $("tAnn").innerHTML = `<thead><tr><th>Duyuru</th><th>Tarihler</th><th>Durum</th><th>İşlem</th></tr></thead><tbody>${
+      list.map(a => { const [cls, txt] = annState(a), [tur] = annType(a.tur);
+        return `<tr><td><b>${esc(a.baslik)}</b><br><span class="muted">${esc(tur)}${a.onecikar === "evet" ? ", öne çıkan" : ""}</span></td>
+        <td>${a.yayin ? esc(trDate(a.yayin, false)) : "—"}<br><span class="muted">${a.bitis ? "Bitiş: " + esc(trDate(a.bitis, false)) : "Bitiş yok"}</span></td>
+        <td><span class="status ${cls}">${txt}</span></td>
+        <td><div class="actions"><button class="btn btn-soft btn-sm" data-annedit="${esc(a.id)}">Düzenle</button><button class="btn btn-no btn-sm" data-anndel="${esc(a.id)}">Sil</button></div></td></tr>`; }).join("")
+      || `<tr><td colspan="4" class="muted">Henüz duyuru yok. Soldaki formdan ilk duyurunuzu ekleyebilirsiniz.</td></tr>`}</tbody>`;
+  }
+  function annReset() {
+    $("annForm").reset(); $("aId").value = ""; $("annFormTitle").textContent = "Yeni duyuru";
+    $("annSubmit").textContent = "Yayımla"; $("annCancel").classList.add("hidden"); $("annErr").classList.add("hidden");
+  }
+  $("annCancel").addEventListener("click", annReset);
+  $("annForm").addEventListener("submit", async e => {
+    e.preventDefault();
+    const data = { id: $("aId").value, baslik: $("aBaslik").value, tur: $("aTur").value, metin: $("aMetin").value,
+      yayin: $("aYayin").value, bitis: $("aBitis").value, baglanti: $("aLink").value.trim(), gorsel: $("aGorsel").value.trim(), onecikar: $("aOne").checked };
+    const v = U.validateAnnouncement(data);
+    if (v) { $("annErr").textContent = v; $("annErr").classList.remove("hidden"); return; }
+    const btn = $("annSubmit"); btn.disabled = true;
+    const r = await LabAPI.admin("annSave", pw, data);
+    btn.disabled = false;
+    if (!r.ok) { $("annErr").textContent = r.error; $("annErr").classList.remove("hidden"); return; }
+    const edited = !!data.id; annReset(); clearAnnCache(); await load();
+    toast(edited ? "Duyuru güncellendi." : "Duyuru yayımlandı.", "ok");
+  });
+  document.addEventListener("click", async e => {
+    const ed = e.target.closest("button[data-annedit]");
+    if (ed) {
+      const a = (S.duyurular || []).find(x => x.id === ed.dataset.annedit); if (!a) return;
+      $("aId").value = a.id; $("aBaslik").value = a.baslik; $("aTur").value = a.tur; $("aMetin").value = a.metin;
+      $("aYayin").value = a.yayin || ""; $("aBitis").value = a.bitis || ""; $("aLink").value = a.baglanti || ""; $("aGorsel").value = a.gorsel || "";
+      $("aOne").checked = a.onecikar === "evet"; $("annFormTitle").textContent = "Duyuruyu düzenle";
+      $("annSubmit").textContent = "Değişiklikleri kaydet"; $("annCancel").classList.remove("hidden");
+      $("annForm").scrollIntoView({ behavior: "smooth", block: "start" }); return;
+    }
+    const del = e.target.closest("button[data-anndel]");
+    if (del) {
+      if (del.dataset.confirm !== "1") { del.dataset.confirm = "1"; del.textContent = "Emin misiniz?"; setTimeout(() => { del.dataset.confirm = ""; del.textContent = "Sil"; }, 3000); return; }
+      const r = await LabAPI.admin("annDelete", pw, { id: del.dataset.anndel });
+      if (!r.ok) { toast(r.error, "err"); return; }
+      clearAnnCache(); await load(); toast("Duyuru silindi.", "ok");
+    }
+  });
 })();

@@ -3,6 +3,7 @@
   const C = window.LAB_CONFIG;
   const NAV = [
     ["index.html", "Ana Sayfa"],
+    ["duyurular.html", "Duyurular"],
     ["sinifimiz.html", "Sınıfımız"],
     ["araclar.html", "Araçlar"],
     ["materyaller.html", "Öğretim Materyalleri"],
@@ -84,5 +85,37 @@
     sel.innerHTML = `<option value="">İlçe seçin</option>` + LAB_DATA.ILCELER.map(i => `<option>${esc(i)}</option>`).join("");
   };
 
-  header(); footer();
+  /* ---------- Duyurular ---------- */
+  const TUR = { atolye: ["Atölye", "#2C3FBF"], duyuru: ["Duyuru", "#1F8A57"], kapali: ["Laboratuvar kapalı", "#B8342A"] };
+  window.annType = t => TUR[t] || TUR.duyuru;
+  window.renderAnnouncement = (a, full) => {
+    const [ad, renk] = annType(a.tur);
+    const metin = esc(a.metin || "").replace(/\n/g, "<br>");
+    return `<article class="ann${full ? " ann-full" : ""}" id="${esc(a.id)}">
+      ${a.gorsel ? `<img class="ann-img" src="${esc(a.gorsel)}" alt="" loading="lazy">` : ""}
+      <div class="ann-body">
+        <div class="ann-meta"><span class="tag" style="--c:${renk}">${ad}</span><time>${a.yayin ? esc(trDate(a.yayin, false)) : ""}</time></div>
+        <h3>${esc(a.baslik)}</h3>
+        <p class="${full ? "" : "ann-clip"}">${metin}</p>
+        ${a.baglanti ? `<a class="btn btn-soft btn-sm" href="${esc(a.baglanti)}" target="_blank" rel="noopener">${a.tur === "atolye" ? "Başvur" : "Ayrıntılar"}</a>` : ""}
+        ${!full ? `<a class="ann-more" href="duyurular.html#${esc(a.id)}">Duyurunun tamamı</a>` : ""}
+      </div></article>`;
+  };
+  window.LabAnnouncements = (async () => {
+    const KEY = "labDuyuru_v1";
+    try { const c = JSON.parse(sessionStorage.getItem(KEY) || "null"); if (c && Date.now() - c.t < 180000) return c.r; } catch (e) {}
+    const r = await LabAPI.announcements();
+    if (r && r.ok) { try { sessionStorage.setItem(KEY, JSON.stringify({ t: Date.now(), r })); } catch (e) {} }
+    return r && r.ok ? r : { aktif: [], arsiv: [] };
+  })();
+  function noticeBar() {
+    const el = document.getElementById("site-header"); if (!el) return;
+    LabAnnouncements.then(r => {
+      const f = (r.aktif || []).find(a => a.onecikar === "evet"); if (!f) return;
+      const [, renk] = annType(f.tur);
+      el.insertAdjacentHTML("beforeend", `<div class="notice-bar" style="--c:${renk}"><div class="wrap"><b>${esc(f.baslik)}</b><a href="duyurular.html#${esc(f.id)}">Ayrıntılar</a></div></div>`);
+    });
+  }
+
+  header(); footer(); noticeBar();
 })();

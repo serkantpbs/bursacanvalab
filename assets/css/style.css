@@ -52,14 +52,14 @@ p { margin: 0 0 1em; }
 .brand-text b { font-size: 1.08rem; font-weight: 800; letter-spacing: -.01em; }
 .brand-text small { color: var(--muted); font-size: .8rem; }
 .main-nav { display: flex; gap: 2px; align-items: center; }
-.main-nav a { text-decoration: none; color: var(--ink); font-weight: 600; font-size: .93rem; padding: 24px 12px 21px; border-bottom: 3px solid transparent; }
+.main-nav a { text-decoration: none; color: var(--ink); font-weight: 600; font-size: .92rem; padding: 24px 10px 21px; border-bottom: 3px solid transparent; }
 .main-nav a:hover { color: var(--blue); }
 .main-nav a.active { border-bottom-color: var(--blue); color: var(--blue); }
 .main-nav a.nav-cta { background: var(--blue); color: #fff; border: 0; padding: 10px 18px; border-radius: 4px; margin-left: 10px; }
 .main-nav a.nav-cta:hover, .main-nav a.nav-cta.active { background: var(--blue-dark); color: #fff; }
 .nav-toggle { display: none; background: none; border: 1px solid var(--line); border-radius: 4px; padding: 8px 10px; cursor: pointer; font: inherit; font-weight: 600; color: var(--ink); }
 .demo-bar { background: var(--amber-tint); color: var(--amber); text-align: center; font-size: .82rem; padding: 6px 12px; border-top: 1px solid #F1DDB8; }
-@media (max-width: 1020px) {
+@media (max-width: 1120px) {
   .nav-toggle { display: block; }
   .main-nav { display: none; position: absolute; left: 0; right: 0; top: 100%; background: #fff; flex-direction: column; align-items: stretch; padding: 8px 20px 20px; border-bottom: 1px solid var(--line); }
   .main-nav.open { display: flex; }
@@ -318,3 +318,31 @@ table.data tr:last-child td { border-bottom: 0; }
 .toast[data-type="ok"] { background: var(--green); }
 .kvkk-text { max-width: 72ch; }
 .kvkk-text h2 { font-size: 1.15rem; margin-top: 1.6em; }
+
+/* ---------- Duyurular ---------- */
+.notice-bar { background: var(--c, var(--blue)); color: #fff; font-size: .9rem; }
+.notice-bar .wrap { display: flex; gap: 14px; align-items: center; justify-content: center; padding: 8px 0; flex-wrap: wrap; text-align: center; }
+.notice-bar b { font-weight: 600; }
+.notice-bar a { color: #fff; font-weight: 700; }
+.ann-list { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 20px; align-items: start; }
+.ann { border: 1px solid var(--line); border-radius: var(--r); background: #fff; overflow: hidden; display: flex; flex-direction: column; scroll-margin-top: 110px; }
+.ann:target { outline: 3px solid var(--blue); }
+.ann-img { width: 100%; aspect-ratio: 16/9; object-fit: cover; border-bottom: 1px solid var(--line); }
+.ann-body { padding: 18px 20px 20px; display: flex; flex-direction: column; gap: 8px; flex: 1; align-items: flex-start; }
+.ann-meta { display: flex; gap: 12px; align-items: center; font-size: .85rem; color: var(--muted); }
+.ann h3 { margin: 0; font-size: 1.12rem; }
+.ann p { margin: 0; color: var(--muted); font-size: .95rem; }
+.ann-clip { display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+.ann-more { font-size: .88rem; font-weight: 600; margin-top: 4px; }
+.ann-full { flex-direction: row; }
+.ann-full .ann-img { width: 38%; aspect-ratio: auto; border-bottom: 0; border-right: 1px solid var(--line); }
+.ann-full p { color: var(--ink); }
+@media (max-width: 760px) { .ann-full { flex-direction: column; } .ann-full .ann-img { width: 100%; aspect-ratio: 16/9; border-right: 0; border-bottom: 1px solid var(--line); } }
+.ann-stack { display: grid; gap: 16px; }
+.archive { margin-top: 40px; }
+.archive summary { cursor: pointer; font-weight: 700; font-size: 1.05rem; padding: 12px 0; border-top: 1px solid var(--line); }
+.archive ul { list-style: none; padding: 0; margin: 8px 0 0; }
+.archive li { padding: 10px 0; border-bottom: 1px solid var(--line); display: grid; grid-template-columns: 130px 1fr; gap: 12px; font-size: .93rem; }
+.archive li time { color: var(--muted); }
+.section-row { display: flex; justify-content: space-between; align-items: baseline; gap: 16px; flex-wrap: wrap; }
+@media (max-width: 900px) { #annLayout { grid-template-columns: 1fr !important; } }

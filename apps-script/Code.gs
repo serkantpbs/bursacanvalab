@@ -25,7 +25,8 @@ var AYAR = {
 var SAYFALAR = {
   Randevular: ['kod', 'olusturma', 'durum', 'tarih', 'oturum', 'adSoyad', 'okul', 'il', 'ilce', 'kisi', 'telefon', 'eposta', 'aciklama', 'not', 'islemTarihi'],
   Raporlar: ['id', 'olusturma', 'kod', 'tarih', 'oturum', 'adSoyad', 'okul', 'il', 'ilce', 'kademe', 'ogrenci', 'kiz', 'erkek', 'aciklama', 'araclar', 'aracAdlari'],
-  Kapanislar: ['id', 'tarih', 'oturum', 'neden', 'olusturma']
+  Kapanislar: ['id', 'tarih', 'oturum', 'neden', 'olusturma'],
+  Duyurular: ['id', 'olusturma', 'baslik', 'metin', 'tur', 'baglanti', 'gorsel', 'yayin', 'bitis', 'onecikar']
 };
 var AKTIF = ['beklemede', 'onaylandi'];
 
@@ -50,6 +51,7 @@ function doGet(e) {
   try {
     if (a === 'availability') return json(musaitlik());
     if (a === 'lookup') return json(randevuBul(e.parameter.kod));
+    if (a === 'announcements') return json(duyurulariGetir());
     return json({ ok: true, mesaj: AYAR.LAB_ADI + ' servisi çalışıyor.' });
   } catch (err) { return json({ ok: false, error: 'Sunucu hatası: ' + err.message }); }
 }
@@ -67,6 +69,8 @@ function doPost(e) {
       if (a === 'admin_setStatus') return json(kilitle(function () { return durumDegistir(d); }));
       if (a === 'admin_close') return json(kapat(d));
       if (a === 'admin_reopen') return json(yenidenAc(d));
+      if (a === 'admin_annSave') return json(kilitle(function () { return duyuruKaydet(d); }));
+      if (a === 'admin_annDelete') return json(kilitle(function () { return duyuruSil(d); }));
     }
     return json({ ok: false, error: 'Bilinmeyen işlem.' });
   } catch (err) { return json({ ok: false, error: 'Sunucu hatası: ' + err.message }); }
@@ -126,7 +130,7 @@ function yoneticiListe() {
     return r;
   });
   var ran = oku('Randevular').map(function (b) { b.kisi = Number(b.kisi) || 0; return b; });
-  return { ok: true, randevular: ran, raporlar: rap, kapanislar: oku('Kapanislar'), eposta: true };
+  return { ok: true, randevular: ran, raporlar: rap, kapanislar: oku('Kapanislar'), duyurular: oku('Duyurular'), eposta: true };
 }
 
 function durumDegistir(d) {
@@ -162,6 +166,14 @@ function kapat(d) {
   if (!t.length) return { ok: false, error: 'Tarih seçilmedi.' };
   if (['tum', 'sabah', 'ogle'].indexOf(d.oturum) < 0) return { ok: false, error: 'Geçersiz kapsam.' };
   t.forEach(function (tarih, i) { ekle('Kapanislar', { id: 'K' + new Date().getTime() + '_' + i, tarih: tarih, oturum: d.oturum, neden: temiz(d.neden, 200), olusturma: simdi() }); });
+  if (d.duyuru) {
+    var ilk = t[0], son = t[t.length - 1], tek = ilk === son;
+    var aralik = tek ? trGunAy(ilk) + ' ' + ilk.slice(0, 4) : trGunAy(ilk) + ' – ' + trGunAy(son) + ' ' + son.slice(0, 4);
+    var kapsam = d.oturum === 'tum' ? '' : ' ' + AYAR.OTURUMLAR[d.oturum].replace('Sabah oturumu', 'sabah oturumunda').replace('Öğleden sonra oturumu', 'öğleden sonra oturumunda');
+    ekle('Duyurular', { id: 'D' + new Date().getTime(), olusturma: simdi(), tur: 'kapali', baglanti: '', gorsel: '', yayin: bugunAnahtar(), bitis: son, onecikar: 'evet',
+      baslik: 'Laboratuvar ' + aralik + (tek ? ' tarihinde' : ' tarihleri arasında') + ' kapalıdır',
+      metin: 'Laboratuvar ' + aralik + (tek ? ' tarihinde' : ' tarihleri arasında') + kapsam + ' kullanıma kapalıdır.' + (d.neden ? ' Neden: ' + temiz(d.neden, 200) + '.' : '') });
+  }
   return { ok: true };
 }
 
@@ -170,6 +182,41 @@ function yenidenAc(d) {
   if (!hit) return { ok: false, error: 'Kayıt bulunamadı.' };
   sh.deleteRow(hit._satir);
   return { ok: true };
+}
+
+/* ---------- Duyurular ---------- */
+function duyurulariGetir() {
+  var t = bugunAnahtar(), list = oku('Duyurular');
+  var aktif = list.filter(function (a) { return (!a.yayin || a.yayin <= t) && (!a.bitis || a.bitis >= t); })
+    .sort(function (a, b) { return ((b.onecikar === 'evet') - (a.onecikar === 'evet')) || String(b.yayin).localeCompare(String(a.yayin)); });
+  var arsiv = list.filter(function (a) { return a.bitis && a.bitis < t; })
+    .sort(function (a, b) { return String(b.bitis).localeCompare(String(a.bitis)); }).slice(0, 30);
+  return { ok: true, aktif: aktif, arsiv: arsiv };
+}
+function duyuruKaydet(d) {
+  if (!String(d.baslik || '').trim() || !String(d.metin || '').trim()) return { ok: false, error: 'Başlık ve metin zorunludur.' };
+  if (['atolye', 'duyuru', 'kapali'].indexOf(d.tur) < 0) return { ok: false, error: 'Geçersiz duyuru türü.' };
+  if (d.bitis && d.yayin && d.bitis < d.yayin) return { ok: false, error: 'Bitiş tarihi yayın tarihinden önce olamaz.' };
+  if (d.baglanti && !/^https?:\/\//.test(d.baglanti)) return { ok: false, error: 'Bağlantı http:// ya da https:// ile başlamalıdır.' };
+  var rec = { baslik: temiz(d.baslik, 200), metin: temiz(d.metin, 2000), tur: d.tur, baglanti: temiz(d.baglanti, 500), gorsel: temiz(d.gorsel, 500),
+    yayin: d.yayin || bugunAnahtar(), bitis: d.bitis || '', onecikar: d.onecikar ? 'evet' : 'hayır' };
+  var h = SAYFALAR.Duyurular, sh = sayfa('Duyurular');
+  var hit = d.id ? oku('Duyurular', true).filter(function (x) { return x.id === d.id; })[0] : null;
+  if (hit) {
+    rec.id = hit.id; rec.olusturma = hit.olusturma;
+    sh.getRange(hit._satir, 1, 1, h.length).setValues([h.map(function (k) { return rec[k] == null ? '' : String(rec[k]); })]);
+  } else { rec.id = 'D' + new Date().getTime(); rec.olusturma = simdi(); ekle('Duyurular', rec); }
+  return { ok: true };
+}
+function duyuruSil(d) {
+  var hit = oku('Duyurular', true).filter(function (x) { return x.id === d.id; })[0];
+  if (!hit) return { ok: false, error: 'Duyuru bulunamadı.' };
+  sayfa('Duyurular').deleteRow(hit._satir);
+  return { ok: true };
+}
+function trGunAy(k) {
+  var ay = ['Ocak', 'Şubat', 'Mart', 'Nisan', 'Mayıs', 'Haziran', 'Temmuz', 'Ağustos', 'Eylül', 'Ekim', 'Kasım', 'Aralık'];
+  var d = anahtardanTarih(k); return d.getDate() + ' ' + ay[d.getMonth()];
 }
 
 /* ---------- Kurallar (sitedeki api.js ile aynı) ---------- */
@@ -227,7 +274,7 @@ function oku(ad, satirli) {
     var o = {};
     h.forEach(function (k, j) {
       var v = r[j];
-      o[k] = v instanceof Date ? Utilities.formatDate(v, AYAR.SAAT_DILIMI, k === 'tarih' ? 'yyyy-MM-dd' : "yyyy-MM-dd'T'HH:mm:ss") : String(v);
+      o[k] = v instanceof Date ? Utilities.formatDate(v, AYAR.SAAT_DILIMI, (k === 'tarih' || k === 'yayin' || k === 'bitis') ? 'yyyy-MM-dd' : "yyyy-MM-dd'T'HH:mm:ss") : String(v);
     });
     if (satirli) o._satir = i + 2;
     return o;

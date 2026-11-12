@@ -59,6 +59,34 @@
     return null;
   }
 
+  /* Kapatılan günler için otomatik duyuru metni */
+  function closureAnnouncement(d) {
+    const AY = ["Ocak", "Şubat", "Mart", "Nisan", "Mayıs", "Haziran", "Temmuz", "Ağustos", "Eylül", "Ekim", "Kasım", "Aralık"];
+    const f = k => { const x = fromKey(k); return `${x.getDate()} ${AY[x.getMonth()]}`; };
+    const t = d.tarihler, ilk = t[0], son = t[t.length - 1];
+    const aralik = ilk === son ? `${f(ilk)} ${fromKey(ilk).getFullYear()}` : `${f(ilk)} – ${f(son)} ${fromKey(son).getFullYear()}`;
+    const kapsam = d.oturum === "tum" ? "" : ` ${((C.OTURUMLAR.find(o => o.id === d.oturum) || {}).ad || "").toLocaleLowerCase("tr")} (${(C.OTURUMLAR.find(o => o.id === d.oturum) || {}).saat || ""})`.replace(" oturumu", " oturumunda");
+    return { baslik: `Laboratuvar ${aralik} tarihinde kapalıdır`.replace("tarihinde", ilk === son ? "tarihinde" : "tarihleri arasında"),
+      metin: `Laboratuvar ${aralik}${ilk === son ? " tarihinde" : " tarihleri arasında"}${kapsam} kullanıma kapalıdır.${d.neden ? " Neden: " + d.neden + "." : ""}`,
+      tur: "kapali", baglanti: "", gorsel: "", yayin: toKey(today()), bitis: son, onecikar: "evet" };
+  }
+
+  /* Duyuruları güncel / arşiv olarak ayırır */
+  function splitAnnouncements(list) {
+    const t = toKey(today());
+    const aktif = list.filter(a => (!a.yayin || a.yayin <= t) && (!a.bitis || a.bitis >= t))
+      .sort((a, b) => (String(b.onecikar) === "evet") - (String(a.onecikar) === "evet") || String(b.yayin).localeCompare(String(a.yayin)));
+    const arsiv = list.filter(a => a.bitis && a.bitis < t).sort((a, b) => String(b.bitis).localeCompare(String(a.bitis))).slice(0, 30);
+    return { aktif, arsiv };
+  }
+  function validateAnnouncement(a) {
+    if (!String(a.baslik || "").trim() || !String(a.metin || "").trim()) return "Başlık ve metin zorunludur.";
+    if (!["atolye", "duyuru", "kapali"].includes(a.tur)) return "Geçersiz duyuru türü.";
+    if (a.bitis && a.yayin && a.bitis < a.yayin) return "Bitiş tarihi yayın tarihinden önce olamaz.";
+    if (a.baglanti && !/^https?:\/\//.test(a.baglanti)) return "Bağlantı http:// ya da https:// ile başlamalıdır.";
+    return null;
+  }
+
   const newCode = () => "CTL-" + Array.from({ length: 6 }, () =>
     "ABCDEFGHJKLMNPQRSTUVWXYZ23456789"[Math.floor(Math.random() * 32)]).join("");
 
@@ -68,7 +96,8 @@
   function load() {
     if (mem) return mem;
     try { mem = JSON.parse(localStorage.getItem(KEY)) || null; } catch (e) { mem = null; }
-    if (!mem) mem = { randevular: [], raporlar: [], kapanislar: [] };
+    if (!mem) mem = { randevular: [], raporlar: [], kapanislar: [], duyurular: [] };
+    if (!mem.duyurular) mem.duyurular = [];
     return mem;
   }
   function save() { try { localStorage.setItem(KEY, JSON.stringify(mem)); } catch (e) { /* bellekte kalır */ } }
@@ -93,6 +122,7 @@
       s.randevular.push(rec); save();
       return wait({ ok: true, kod: rec.kod });
     },
+    announcements() { return wait(Object.assign({ ok: true }, splitAnnouncements(load().duyurular))); },
     lookup(kod) {
       const b = load().randevular.find(x => x.kod === String(kod).trim().toUpperCase());
       if (!b) return wait({ ok: false, error: "Bu kodla bir randevu bulunamadı." });
@@ -112,7 +142,7 @@
     admin(action, sifre, data) {
       if (sifre !== C.DEMO_ADMIN_PASSWORD) return wait({ ok: false, error: "Şifre hatalı." });
       const s = load();
-      if (action === "list") return wait({ ok: true, randevular: s.randevular, raporlar: s.raporlar, kapanislar: s.kapanislar, eposta: false });
+      if (action === "list") return wait({ ok: true, randevular: s.randevular, raporlar: s.raporlar, kapanislar: s.kapanislar, duyurular: s.duyurular, eposta: false });
       if (action === "setStatus") {
         const b = s.randevular.find(x => x.kod === data.kod);
         if (!b) return wait({ ok: false, error: "Randevu bulunamadı." });
@@ -123,9 +153,19 @@
       }
       if (action === "close") {
         (data.tarihler || []).forEach((t, i) => s.kapanislar.push({ id: "K" + Date.now() + "_" + i, tarih: t, oturum: data.oturum, neden: data.neden || "" }));
+        if (data.duyuru) s.duyurular.push(Object.assign({ id: "D" + Date.now(), olusturma: new Date().toISOString() }, closureAnnouncement(data)));
         save();
         return wait({ ok: true });
       }
+      if (action === "annSave") {
+        const err = validateAnnouncement(data); if (err) return wait({ ok: false, error: err });
+        const rec = { baslik: data.baslik.trim(), metin: data.metin.trim(), tur: data.tur, baglanti: (data.baglanti || "").trim(),
+          gorsel: (data.gorsel || "").trim(), yayin: data.yayin || toKey(today()), bitis: data.bitis || "", onecikar: data.onecikar ? "evet" : "hayır" };
+        const ex = data.id && s.duyurular.find(x => x.id === data.id);
+        if (ex) Object.assign(ex, rec); else s.duyurular.push(Object.assign({ id: "D" + Date.now(), olusturma: new Date().toISOString() }, rec));
+        save(); return wait({ ok: true });
+      }
+      if (action === "annDelete") { s.duyurular = s.duyurular.filter(x => x.id !== data.id); save(); return wait({ ok: true }); }
       if (action === "reopen") { s.kapanislar = s.kapanislar.filter(c => c.id !== data.id); save(); return wait({ ok: true }); }
       return wait({ ok: false, error: "Bilinmeyen işlem." });
     }
@@ -150,12 +190,13 @@
     availability: () => call("GET", { action: "availability" }),
     createBooking: b => call("POST", { action: "createBooking", data: b }),
     lookup: kod => call("GET", { action: "lookup", kod }),
+    announcements: () => call("GET", { action: "announcements" }),
     submitReport: r => call("POST", { action: "submitReport", data: r }),
     admin: (action, sifre, data) => call("POST", { action: "admin_" + action, sifre, data: data || {} })
   };
 
   window.LabAPI = Object.assign({}, C.APPS_SCRIPT_URL ? remote : demo, {
     demo: !C.APPS_SCRIPT_URL,
-    util: { toKey, fromKey, addDays, today, mondayOf, holidayOf, phoneDigits, validateBooking, validateReport }
+    util: { toKey, fromKey, addDays, today, mondayOf, holidayOf, phoneDigits, validateBooking, validateReport, validateAnnouncement }
   });
 })();
